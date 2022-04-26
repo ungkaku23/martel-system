@@ -9,11 +9,8 @@ const Search = () => {
   return (
     <div>
       <Row>
-        <Col className="pr-grid-col" xs={12} lg={6}>
-          Hello
-        </Col>
-        <Col className="pl-grid-col pr-grid-col" xs={12} lg={6}>
-          Search
+        <Col className="pr-grid-col" xs={12} lg={12}>
+          
         </Col>
       </Row>
     </div>

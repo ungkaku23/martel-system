@@ -16,11 +16,6 @@ import Footer from "../../components/Footer/Footer.js";
 
 import loginImage from "../../assets/registerImage.svg";
 import RLogo from "../../components/Icons/RLogo.js";
-import GoogleIcon from "../../components/Icons/AuthIcons/GoogleIcon.js";
-import TwitterIcon from "../../components/Icons/AuthIcons/TwitterIcon.js";
-import FacebookIcon from "../../components/Icons/AuthIcons/FacebookIcon.js";
-import GithubIcon from "../../components/Icons/AuthIcons/GithubIcon.js";
-import LinkedinIcon from "../../components/Icons/AuthIcons/LinkedinIcon.js";
 import { registerUser } from "../../actions/register.js";
 import hasToken from "../../services/authService";
 

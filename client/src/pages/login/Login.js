@@ -18,11 +18,6 @@ import hasToken from "../../services/authService";
 
 import loginImage from "../../assets/loginImage.svg";
 import RLogo from "../../components/Icons/RLogo.js";
-import GoogleIcon from "../../components/Icons/AuthIcons/GoogleIcon.js";
-import TwitterIcon from "../../components/Icons/AuthIcons/TwitterIcon.js";
-import FacebookIcon from "../../components/Icons/AuthIcons/FacebookIcon.js";
-import GithubIcon from "../../components/Icons/AuthIcons/GithubIcon.js";
-import LinkedinIcon from "../../components/Icons/AuthIcons/LinkedinIcon.js";
 
 const Login = (props) => {
 
