@@ -4,9 +4,11 @@ import s from "./Footer.module.scss";
 
 const Footer = () => {
   return (
-    <div className={s.footer}>
-      <span className={s.footerLabel}>2022 &copy; Martel International.</span>
-      <FooterIcon />
+    <div className={s.footerContainer}>
+      <div className={s.footer}>
+        <span className={s.footerLabel}>2022 &copy; Martel International.</span>
+        <FooterIcon />
+      </div>
     </div>
   )
 }

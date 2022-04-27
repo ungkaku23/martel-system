@@ -48,7 +48,7 @@ const Breadcrumbs = (props) => {
 
   return (
     <div className={s.breadcrumbs}>
-      <div className="headline-2">{breadcrumbTitle}</div>
+      <div className="headline-1">{breadcrumbTitle}</div>
       {breadcrumbTitle !== "Dashboard" &&
       <Breadcrumb tag="nav" listTag="div">
         {renderBreadcrumbs()}

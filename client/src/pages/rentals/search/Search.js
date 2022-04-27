@@ -1,27 +1,351 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   Col,
   Row,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Button,
+  ButtonGroup,
+  Table,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Badge
 } from "reactstrap";
 
 import Widget from "../../../components/Widget/Widget";
 
+import sTable from "../../../styles/Tables.module.scss";
+
+import mock from "../mocks.js";
+
 const Search = () => {
+
+  const [searchOption, setSearchOption] = useState({
+    site: 'Zillow',
+    homeType: 'Houses'
+  });
+
+  const homeTypeList = ['Houses', 'Town Homes', 'Apartments'];
+  const siteList = ['Zillow', 'Realtor'];
+  
+  const [rentalSearchResults] = useState(mock.rentalSearchResults);
+  const [currentPage, setCurrentPage] = useState(1);
+  const updateCurrentPage = (e, index) => {
+    e.preventDefault();
+    setCurrentPage(index);
+  }
+  const pageSize = 5;
+  const pagesCount = Math.ceil(rentalSearchResults.length / pageSize);
+
   return (
-    <div>
-      <Row>
-        <Col className="pr-grid-col" xs={12} lg={12}>
-          <Widget className="widget-p-lg">
-            <div className="d-flex align-items-center justify-content-between py-3">
-              dsada
+    <div className="s-main-content">
+      <Widget className="widget-p-lg">
+        <div className="headline-2 text-muted">
+          Search For Rent
+        </div>
+        <div className="mt-4">
+          <Form>
+            <FormGroup row>
+              <Label
+                for="origin-site"
+                sm={2}
+              >
+                Origin Site
+              </Label>
+              <Col sm={10}>
+                <ButtonGroup>
+                  {
+                    siteList.map((o, idx) => {
+                      return <Button
+                              key={idx}
+                              color={searchOption.site === o ? 'primary' : 'secondary'}
+                              onClick={() => {
+                                setSearchOption({
+                                  ...searchOption,
+                                  site: o
+                                });
+                              }}
+                            >
+                              {o}
+                            </Button>
+                    })
+                  }
+                </ButtonGroup>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label
+                for="city"
+                sm={2}
+              >
+                City
+              </Label>
+              <Col sm={10}>
+                <Input
+                  id="city"
+                  name="city"
+                  type="text"
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label
+                for="city"
+                sm={2}
+              >
+                Price
+              </Label>
+              <Col sm={10}>
+                <div className="d-flex justify-content-between align-items-center">
+                  <FormGroup>
+                    <Label for="min">
+                      Min
+                    </Label>
+                    <Input
+                      id="min"
+                      name="min"
+                      type="number"
+                    />
+                  </FormGroup>
+                  <div>To</div>
+                  <FormGroup>
+                    <Label for="max">
+                      Max
+                    </Label>
+                    <Input
+                      id="max"
+                      name="max"
+                      type="number"
+                    />
+                  </FormGroup>
+                </div>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label 
+                for="bedrooms"
+                sm={2}
+              >
+                Bedrooms
+              </Label>
+              <Col 
+                className="d-flex algin-items-center" 
+                sm={10}
+              >
+                <Input
+                  id="bedrooms"
+                  name="range"
+                  type="range"
+                  min="0" 
+                  max="5" 
+                  step="1"
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label 
+                for="bathrooms"
+                sm={2}
+              >
+                Bathrooms
+              </Label>
+              <Col 
+                className="d-flex algin-items-center" 
+                sm={10}
+              >
+                <Input
+                  id="bathrooms"
+                  name="range"
+                  type="range"
+                  min="0" 
+                  max="5" 
+                  step="1"
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label
+                for="home-type"
+                sm={2}
+              >
+                Home Type
+              </Label>
+              <Col sm={10}>
+                <ButtonGroup>
+                  {
+                    homeTypeList.map((o, idx) => {
+                      return <Button
+                              key={idx}
+                              color={searchOption.homeType === o ? 'primary' : 'secondary'}
+                              onClick={() => {
+                                setSearchOption({
+                                  ...searchOption,
+                                  homeType: o
+                                });
+                              }}
+                            >
+                              {o}
+                            </Button>
+                    })
+                  }
+                </ButtonGroup>
+              </Col>
+            </FormGroup>
+            <FormGroup 
+              row
+              className="d-flex align-items-center justify-content-center mt-5"
+            >
+              <Button
+                color="primary"
+                onClick={() => {
+                }}
+              >
+                Search
+              </Button>
+            </FormGroup>
+          </Form>
+        </div>
+      </Widget>
+      <Widget className="widget-p-lg mt-4">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="headline-2 text-muted">Results</div>
+          <Button
+            color="primary"
+            onClick={() => {
+            }}
+          >
+            Add Multiples
+          </Button>
+        </div>
+        <div className="widget-table-overflow mt-4">
+          <Table 
+            className={`table-striped table-borderless table-hover ${sTable.statesTable}`} 
+            responsive
+          >
+            <thead>
+            <tr>
+              <th className={sTable.checkboxCol}>
+                <div className="checkbox checkbox-primary">
+                  <input
+                    className="styled"
+                    id="checkbox100"
+                    type="checkbox"
+                  />
+                  <label for="checkbox100"/>
+                </div>
+              </th>
+              <th className="w-15">DATE</th>
+              <th className="w-15">ADDRESS</th>
+              <th className="w-15">STATE</th>
+              <th className="w-15">CITY</th>
+              <th className="w-15">ZIP</th>
+              <th className="w-25">ACTIONS</th>
+            </tr>
+            </thead>
+            <tbody>
+            {
+              rentalSearchResults
+              .slice(
+                currentPage * pageSize,
+                (currentPage + 1) * pageSize
+              )
+              .map(item => (
+                <tr key={uuidv4()}>
+                  <td>
+                    <div className="checkbox checkbox-primary">
+                      <input
+                        id={item.id}
+                        className="styled"
+                        type="checkbox"
+                      />
+                      <Label for={item.id} />
+                    </div>
+                  </td>
+                  <td>{item.date}</td>
+                  <td>{item.address}</td>
+                  <td>{item.state}</td>
+                  <td>{item.city}</td>
+                  <td>{item.zip}</td>
+                  <td>
+                    <Badge
+                      color="success"
+                      className={sTable.shortlist}>
+                        Add To Shortlist
+                    </Badge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center">
+              <Label for="page-size">
+                Number of Page
+              </Label>
+              <Input
+                id="page-size"
+                className={sTable.pageSize}
+                name="pageSize"
+                type="select"
+              >
+                <option>
+                  5
+                </option>
+                <option>
+                  10
+                </option>
+                <option>
+                  15
+                </option>
+                <option>
+                  20
+                </option>
+                <option>
+                  25
+                </option>
+              </Input>
             </div>
-            <div className="my-2">
-              <p>This is the Progressive Web Application for Real-Eastate Investor</p>
-            </div>
-          </Widget>
-        </Col>
-      </Row>
+              <Pagination 
+                className="pagination-borderless" 
+                aria-label="Page navigation"
+              >
+                <PaginationItem 
+                  disabled={currentPage <= 0}
+                  className={sTable.currentPageCtrl} 
+                >
+                  <PaginationLink
+                    className="ml-0 px-1 text-center"
+                    onClick={e => updateCurrentPage(e, currentPage - 1)}
+                    previous
+                    href="#"
+                  />
+                </PaginationItem>
+                <Input
+                  name="current"
+                  type="number"
+                  className={sTable.currentPage}
+                  value={currentPage}
+                >
+                </Input>
+                <PaginationItem
+                  className={sTable.currentPageCtrl} 
+                  disabled={currentPage >= pagesCount - 1}
+                >
+                  <PaginationLink
+                    className="ml-0 px-1 text-center"
+                    onClick={e => updateCurrentPage(e, currentPage + 1)}
+                    next
+                    href="#"
+                  />
+                </PaginationItem>
+              </Pagination>
+          </div>
+        </div>
+      </Widget>
     </div>
   );
 }

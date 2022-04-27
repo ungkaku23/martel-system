@@ -60,3 +60,24 @@ ol {
   list-style: none;
   padding-left: 0;
 }
+
+.nv-boxshadow {
+  box-shadow: 4px 4px 16px 0 rgba(77, 83, 224, 0.2);
+}
+
+.s-main-content {
+  height: calc(100vh - 278px);
+  overflow: auto;
+
+  @media (max-width: breakpoint-max(sm)) {
+    height: calc(100vh - 290px);
+  }
+}
+
+.h-auto {
+  height: auto !important;
+}
+
+.btn {
+  padding: 6px 25px !important;
+}
