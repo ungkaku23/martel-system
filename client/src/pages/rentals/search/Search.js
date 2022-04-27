@@ -16,6 +16,9 @@ import {
   Badge
 } from "reactstrap";
 
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import SearchLocationInput from './SearchLocationInput';
+
 import Widget from "../../../components/Widget/Widget";
 
 import sTable from "../../../styles/Tables.module.scss";
@@ -51,7 +54,7 @@ const Search = () => {
           <Form>
             <FormGroup row>
               <Label
-                for="origin-site"
+                htmlFor="origin-site"
                 sm={2}
               >
                 Origin Site
@@ -79,22 +82,18 @@ const Search = () => {
             </FormGroup>
             <FormGroup row>
               <Label
-                for="city"
+                htmlFor="city"
                 sm={2}
               >
                 City
               </Label>
               <Col sm={10}>
-                <Input
-                  id="city"
-                  name="city"
-                  type="text"
-                />
+                <SearchLocationInput onChange={() => null} />
               </Col>
             </FormGroup>
             <FormGroup row>
               <Label
-                for="city"
+                htmlFor="city"
                 sm={2}
               >
                 Price
@@ -102,7 +101,7 @@ const Search = () => {
               <Col sm={10}>
                 <div className="d-flex justify-content-between align-items-center">
                   <FormGroup>
-                    <Label for="min">
+                    <Label htmlFor="min">
                       Min
                     </Label>
                     <Input
@@ -113,7 +112,7 @@ const Search = () => {
                   </FormGroup>
                   <div>To</div>
                   <FormGroup>
-                    <Label for="max">
+                    <Label htmlFor="max">
                       Max
                     </Label>
                     <Input
@@ -127,7 +126,7 @@ const Search = () => {
             </FormGroup>
             <FormGroup row>
               <Label 
-                for="bedrooms"
+                htmlFor="bedrooms"
                 sm={2}
               >
                 Bedrooms
@@ -148,7 +147,7 @@ const Search = () => {
             </FormGroup>
             <FormGroup row>
               <Label 
-                for="bathrooms"
+                htmlFor="bathrooms"
                 sm={2}
               >
                 Bathrooms
@@ -169,7 +168,7 @@ const Search = () => {
             </FormGroup>
             <FormGroup row>
               <Label
-                for="home-type"
+                htmlFor="home-type"
                 sm={2}
               >
                 Home Type
@@ -235,7 +234,7 @@ const Search = () => {
                     id="checkbox100"
                     type="checkbox"
                   />
-                  <label for="checkbox100"/>
+                  <label htmlFor="checkbox100"/>
                 </div>
               </th>
               <th className="w-15">DATE</th>
@@ -262,7 +261,7 @@ const Search = () => {
                         className="styled"
                         type="checkbox"
                       />
-                      <Label for={item.id} />
+                      <Label htmlFor={item.id} />
                     </div>
                   </td>
                   <td>{item.date}</td>
@@ -283,7 +282,7 @@ const Search = () => {
           </Table>
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
-              <Label for="page-size">
+              <Label htmlFor="page-size">
                 Number of Page
               </Label>
               <Input
@@ -328,7 +327,7 @@ const Search = () => {
                   name="current"
                   type="number"
                   className={sTable.currentPage}
-                  value={currentPage}
+                  defaultValue={currentPage}
                 >
                 </Input>
                 <PaginationItem
