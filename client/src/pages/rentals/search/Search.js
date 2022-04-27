@@ -16,7 +16,6 @@ import {
   Badge
 } from "reactstrap";
 
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 import SearchLocationInput from './SearchLocationInput';
 
 import Widget from "../../../components/Widget/Widget";
