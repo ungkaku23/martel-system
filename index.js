@@ -2,7 +2,7 @@ const express = require("express")
       app = express(),
       session = require('express-session'),
       authRoute = require("./routes/auth"),
-      postRoute = require("./routes/post"),
+      rentalRoute = require("./routes/rental"),
       auth = require('./middleware/auth.js')(),
       mongoose = require("mongoose"),
       passport = require("passport"),
@@ -39,7 +39,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(authRoute);
-app.use(postRoute);
+app.use(rentalRoute);
 
 // Have Node serve the files for our built React app
 app.use(express.static(path.resolve(__dirname, './client/build')));
