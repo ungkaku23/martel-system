@@ -22,14 +22,17 @@ const loadScript = (url, callback) => {
 };
 
 function handleScriptLoad(updateQuery, autoCompleteRef) {
-  autoComplete = new window.google.maps.places.Autocomplete(
-    autoCompleteRef.current,
-    { types: ["(cities)"], componentRestrictions: { country: "us" } }
-  );
-  autoComplete.setFields(["address_components", "formatted_address"]);
-  autoComplete.addListener("place_changed", () =>
-    handlePlaceSelect(updateQuery)
-  );
+  setTimeout(() => {
+    autoComplete = new window.google.maps.places.Autocomplete(
+      autoCompleteRef.current,
+      { types: ["(cities)"], componentRestrictions: { country: "us" } }
+    );
+    autoComplete.setFields(["address_components", "formatted_address"]);
+    autoComplete.addListener("place_changed", () =>
+      handlePlaceSelect(updateQuery)
+    );
+  }, 1000);
+  
 }
 
 async function handlePlaceSelect(updateQuery) {

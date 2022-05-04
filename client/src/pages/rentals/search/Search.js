@@ -18,6 +18,8 @@ import {
 
 import SearchLocationInput from './SearchLocationInput';
 
+import Autocomplete from "react-google-autocomplete";
+
 import Widget from "../../../components/Widget/Widget";
 
 import sTable from "../../../styles/Tables.module.scss";
@@ -87,7 +89,14 @@ const Search = () => {
                 City
               </Label>
               <Col sm={10}>
-                <SearchLocationInput onChange={() => null} />
+                {/* <SearchLocationInput onChange={() => null} /> */}
+                <Autocomplete
+                  className="form-control"
+                  apiKey={"AIzaSyDUJcZMahLqhK9vPGaiskdp-pfWtwTpySE"}
+                  onPlaceSelected={(place) => {
+                    console.log(place);
+                  }}
+                />
               </Col>
             </FormGroup>
             <FormGroup row>
