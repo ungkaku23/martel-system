@@ -5,7 +5,7 @@ var express = require("express"),
 
 exports.login = function (req, res) {
   console.log("Logged In");
-  User.findOne({ username: req.body.username }, (err, user) => {
+  User.findOne({ username: req.body.username, password: req.body.password }, (err, user) => {
     if (err) {
       console.log("Error Happened In auth /token Route");
     } else {
@@ -22,12 +22,12 @@ exports.login = function (req, res) {
 };
 
 exports.register = function (req, res) {
-  console.log('--------------------->')
+  console.log('--------------------->', req.body);
   User.register(
-    new User({ name: req.body.name, username: req.body.username }),
-    req.body.password,
+    new User({ username: req.body.username, password: req.body.password }),
     function (err, msg) {
       if (err) {
+        console.log('errr:  ====: ', err);
         res.send(err);
       } else {
         res.send({ message: "Successful" });

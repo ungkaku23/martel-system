@@ -20,7 +20,7 @@ import { registerUser } from "../../actions/register.js";
 import hasToken from "../../services/authService";
 
 const Register = (props) => {
-  const [state, setState] = useState({ email: '', password: ''} )
+  const [state, setState] = useState({ username: '', password: ''} )
 
   const changeCred = (event) => {
     setState({ ...state, [event.target.name]: event.target.value })
@@ -60,16 +60,16 @@ const Register = (props) => {
               </div>
               <form onSubmit={(event => doRegister(event))}>
                 <FormGroup className="my-3">
-                  <FormText>Email</FormText>
+                  <FormText>Username</FormText>
                   <Input
-                    id="email"
+                    id="username"
                     className="input-transparent pl-3"
-                    value={state.email}
+                    value={state.username}
                     onChange={(event) => changeCred(event)}
-                    type="email"
+                    type="text"
                     required
-                    name="email"
-                    placeholder="Henry Monk"
+                    name="username"
+                    placeholder="superdad"
                   />
                 </FormGroup>
                 <FormGroup  className="my-3">

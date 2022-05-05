@@ -22,13 +22,13 @@ import RLogo from "../../components/Icons/RLogo.js";
 const Login = (props) => {
 
   const [state, setState] = useState({
-    email: 'admin@flatlogic.com',
+    username: 'superdad',
     password: 'password',
   })
 
   const doLogin = (e) => {
     e.preventDefault();
-    props.dispatch(loginUser({ password: state.password, email: state.email }))
+    props.dispatch(loginUser({ password: state.password, username: state.username }))
   }
 
   const changeCreds = (event) => {
@@ -60,16 +60,16 @@ const Login = (props) => {
               </div>
               <form onSubmit={(event) => doLogin(event)}>
                 <FormGroup className="my-3">
-                  <FormText>Email</FormText>
+                  <FormText>Username</FormText>
                   <Input
-                    id="email"
+                    id="username"
                     className="input-transparent pl-3"
-                    value={state.email}
+                    value={state.username}
                     onChange={(event) => changeCreds(event)}
-                    type="email"
+                    type="text"
                     required
-                    name="email"
-                    placeholder="Email"
+                    name="username"
+                    placeholder="superdad"
                   />
                 </FormGroup>
                 <FormGroup  className="my-3">
@@ -77,6 +77,7 @@ const Login = (props) => {
                     <FormText>Password</FormText>
                     <Link to="/error">Forgot password?</Link>
                   </div> */}
+                  <FormText>Password</FormText>
                   <Input
                     id="password"
                     className="input-transparent pl-3"

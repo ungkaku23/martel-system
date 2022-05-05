@@ -10,6 +10,7 @@ const express = require("express")
       User = require("./models/user"),
       bodyParser = require("body-parser"),
       path = require('path'),
+      cors = require('cors'),
       url = "mongodb+srv://jhmun23216:a-wufshjdsus-a@cluster0.hs0c3.mongodb.net/martel?retryWrites=true&w=majority";
 
 mongoose.connect(url, {
@@ -21,6 +22,11 @@ mongoose.connect(url, {
 .catch( (err) => {
   console.error(`Error connecting to the database. \n${err}`);
 });
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+}));
 
 app.use(session({
   resave: false,
