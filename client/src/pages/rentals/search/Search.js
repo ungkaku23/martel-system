@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import {
   Col,
@@ -15,8 +18,6 @@ import {
   PaginationLink,
   Badge
 } from "reactstrap";
-
-import SearchLocationInput from './SearchLocationInput';
 
 import Autocomplete from "react-google-autocomplete";
 
@@ -365,4 +366,16 @@ const Search = () => {
   );
 }
 
-export default Search;
+Search.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+}
+
+function mapStateToProps(state) {
+  return {
+    isFetching: state.auth.isFetching,
+    errorMessage: state.auth.errorMessage,
+    rentalSearchResults: state.rentals.rentalSearchResults
+  };
+}
+
+export default withRouter(connect(mapStateToProps)(Search));
