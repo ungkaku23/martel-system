@@ -30,7 +30,8 @@ const Search = () => {
 
   const [searchOption, setSearchOption] = useState({
     site: 'Zillow',
-    homeType: 'Houses'
+    homeType: 'Houses',
+    citystate: ''
   });
 
   const homeTypeList = ['Houses', 'Town Homes', 'Apartments'];
@@ -95,6 +96,11 @@ const Search = () => {
                   apiKey={"AIzaSyDUJcZMahLqhK9vPGaiskdp-pfWtwTpySE"}
                   onPlaceSelected={(place) => {
                     console.log(place);
+                    let fAddrs = place.formatted_address.split(",");
+                    setSearchOption({
+                      ...searchOption,
+                      citystate: fAddrs[0] + ',' + fAddrs[1].replace(" ", "")
+                    });
                   }}
                 />
               </Col>
@@ -210,6 +216,7 @@ const Search = () => {
               <Button
                 color="primary"
                 onClick={() => {
+
                 }}
               >
                 Search
