@@ -39,18 +39,37 @@ export function logoutUser() {
   return (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('authenticated');
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
     dispatch(receiveLogout());
   };
 }
 
-export function loginUser(creds) {
+export function loginUser(payload) {
   return (dispatch) => {
-    dispatch(receiveLogin());
-    if (creds.email.length > 0 && creds.password.length > 0) {
-      localStorage.setItem('authenticated', true)
-    } else {
-      dispatch(loginError('Something was wrong. Try again'));
-    }
+    axios.post('http://localhost:8080/login', payload.creds)
+    .then(function (response) {
+      toast.success("You've been logged in successfully", {
+        autoClose: 4000,
+        closeButton: false,
+        hideProgressBar: true,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      dispatch(receiveLogin());
+      localStorage.setItem('authenticated', true);
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('username', response.data.username);
+      payload.history.push('/app');
+    })
+    .catch(function (error) {
+      toast.error(error.response.data, {
+        autoClose: 4000,
+        closeButton: false,
+        hideProgressBar: true,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      dispatch(loginError(error));
+    });
   }
 }
 

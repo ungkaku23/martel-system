@@ -150,6 +150,7 @@ const Search = () => {
                   min="0" 
                   max="5" 
                   step="1"
+                  className="primary"
                 />
               </Col>
             </FormGroup>

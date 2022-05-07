@@ -28,7 +28,13 @@ const Login = (props) => {
 
   const doLogin = (e) => {
     e.preventDefault();
-    props.dispatch(loginUser({ password: state.password, username: state.username }))
+    props.dispatch(loginUser({
+      creds: { 
+        password: state.password, 
+        username: state.username 
+      },
+      history: props.history
+    }))
   }
 
   const changeCreds = (event) => {

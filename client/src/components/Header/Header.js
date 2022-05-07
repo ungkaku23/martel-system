@@ -22,17 +22,11 @@ import {
 import { logoutUser } from "../../actions/auth";
 import { closeSidebar, openSidebar } from "../../actions/navigation";
 import MenuIcon from "../Icons/HeaderIcons/MenuIcon";
-import SearchBarIcon from "../Icons/HeaderIcons/SearchBarIcon";
-import SearchIcon from "../Icons/HeaderIcons/SearchIcon";
 
 import ProfileIcon from "../../assets/navbarMenus/pfofileIcons/ProfileIcon";
-import MessagesIcon from "../../assets/navbarMenus/pfofileIcons/MessagesIcon";
 import TasksIcon from "../../assets/navbarMenus/pfofileIcons/TasksIcon";
 
 import logoutIcon from "../../assets/navbarMenus/pfofileIcons/logoutOutlined.svg";
-import basketIcon from "../../assets/navbarMenus/basketIcon.svg";
-import calendarIcon from "../../assets/navbarMenus/calendarIcon.svg";
-import envelopeIcon from "../../assets/navbarMenus/envelopeIcon.svg";
 import userImg from "../../assets/user.png";
 
 import s from "./Header.module.scss";
@@ -81,7 +75,7 @@ const Header = (props) => {
             <span className={`${s.avatar} rounded-circle float-left mr-2`}>
               <img src={userImg} alt="User"/>
             </span>
-            <span className="small d-none d-sm-block ml-1 mr-2 body-1">Steven Martel</span>
+            <span className="small d-none d-sm-block ml-1 mr-2 body-1">{localStorage.getItem('username')}</span>
           </DropdownToggle>
           <DropdownMenu className="navbar-dropdown profile-dropdown" style={{ width: "194px" }}>
             <DropdownItem className={s.dropdownProfileItem}><ProfileIcon/><span>Account</span></DropdownItem>
