@@ -22,6 +22,7 @@ import { ToastContainer } from "react-toastify";
 import isAuthenticated from "./services/authService";
 
 // -- Component Styles
+import "react-toastify/dist/ReactToastify.css";
 import "./styles/app.scss";
 
 const PrivateRoute = ({ dispatch, component, ...rest }) => {

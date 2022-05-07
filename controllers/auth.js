@@ -22,13 +22,13 @@ exports.login = function (req, res) {
 };
 
 exports.register = function (req, res) {
-  console.log('--------------------->', req.body);
   User.register(
-    new User({ username: req.body.username, password: req.body.password }),
-    function (err, msg) {
+    new User({ username : req.body.username }), 
+    req.body.password,
+    function (err, user) {
       if (err) {
-        console.log('errr:  ====: ', err);
-        res.send(err);
+        console.log(err);
+        return res.status(400).send(err.message);
       } else {
         res.send({ message: "Successful" });
       }

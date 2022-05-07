@@ -16,7 +16,7 @@ import Footer from "../../components/Footer/Footer.js";
 
 import loginImage from "../../assets/registerImage.svg";
 import RLogo from "../../components/Icons/RLogo.js";
-import { registerUser } from "../../actions/register.js";
+import { registerUser } from "../../actions/auth.js";
 import hasToken from "../../services/authService";
 
 const Register = (props) => {
