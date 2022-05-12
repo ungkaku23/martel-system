@@ -3,8 +3,6 @@ import axios from 'axios'
 
 export const SEARCH_LISTING_SUCCESS = 'SEARCH_LISTING_SUCCESS';
 export const SEARCH_LISTING_FAILURE = 'SEARCH_LISTING_FAILURE';
-export const FETCH_PAGINATED_LISTING_SUCCESS = 'FETCH_PAGINATED_LISTING_SUCCESS';
-export const FETCH_PAGINATED_LISTING_FAILURE = 'FETCH_PAGINATED_LISTING_FAILURE';
 
 export function searchListingSuccess(payload) {
   return {
@@ -19,18 +17,6 @@ export function searchListingFailure() {
   };
 }
 
-export function fetchPaginatedListingSuccess(payload) {
-  return {
-    type: FETCH_PAGINATED_LISTING_SUCCESS,
-    payload
-  };
-}
-
-export function fetchPaginatedListingFailure() {
-  return {
-    type: FETCH_PAGINATED_LISTING_FAILURE
-  };
-}
 
 export function searchListing(payload) {
   if (payload.cityState === '') {

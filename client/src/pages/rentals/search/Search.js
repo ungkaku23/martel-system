@@ -34,12 +34,13 @@ const Search = (props) => {
   const [searchOption, setSearchOption] = useState({
     site: 'Zillow',
     homeType: 'single-family-home',
-    cityState: '',
     priceMin: -1,
     priceMax: -1,
     beds: 0,
     baths: 0
   });
+
+  const [cityState, setCityState] = useState("");
 
   const homeTypeList = [{
     label: 'Houses',
@@ -65,7 +66,11 @@ const Search = (props) => {
 
   const doSearchListing = (e) => {
     e.preventDefault();
-    props.dispatch(searchListing(searchOption));
+    props.dispatch(searchListing({
+      ...searchOption,
+      cityState,
+      pageIndex: currentPage
+    }));
   }
 
   return (
@@ -81,7 +86,7 @@ const Search = (props) => {
                 htmlFor="origin-site"
                 sm={2}
               >
-                Origin Site {searchOption.site}
+                Origin Site
               </Label>
               <Col sm={10}>
                 <ButtonGroup>
@@ -118,10 +123,7 @@ const Search = (props) => {
                   apiKey={"AIzaSyDUJcZMahLqhK9vPGaiskdp-pfWtwTpySE"}
                   onPlaceSelected={(place) => {
                     let fAddrs = place.formatted_address.split(",");
-                    setSearchOption({
-                      ...searchOption,
-                      cityState: fAddrs[0] + ',' + fAddrs[1].replace(" ", "")
-                    });
+                    setCityState(fAddrs[0] + ',' + fAddrs[1].replace(" ", ""));
                   }}
                 />
               </Col>
