@@ -27,15 +27,31 @@ import sTable from "../../../styles/Tables.module.scss";
 
 import mock from "../mocks.js";
 
-const Search = () => {
+import { searchListing } from "../../../actions/rentals";
+
+const Search = (props) => {
 
   const [searchOption, setSearchOption] = useState({
     site: 'Zillow',
-    homeType: 'Houses',
-    citystate: ''
+    homeType: 'single-family-home',
+    cityState: '',
+    priceMin: -1,
+    priceMax: -1,
+    beds: 0,
+    baths: 0
   });
 
-  const homeTypeList = ['Houses', 'Town Homes', 'Apartments'];
+  const homeTypeList = [{
+    label: 'Houses',
+    value: 'single-family-home',
+  }, {
+    label: 'Town Homes',
+    value: 'townhome'
+  },{
+    label: 'Apartments',
+    value: 'apartments'
+  }];
+
   const siteList = ['Zillow', 'Realtor'];
   
   const [rentalSearchResults] = useState(mock.rentalSearchResults);
@@ -46,6 +62,11 @@ const Search = () => {
   }
   const pageSize = 5;
   const pagesCount = Math.ceil(rentalSearchResults.length / pageSize);
+
+  const doSearchListing = (e) => {
+    e.preventDefault();
+    props.dispatch(searchListing(searchOption));
+  }
 
   return (
     <div className="s-main-content">
@@ -60,7 +81,7 @@ const Search = () => {
                 htmlFor="origin-site"
                 sm={2}
               >
-                Origin Site
+                Origin Site {searchOption.site}
               </Label>
               <Col sm={10}>
                 <ButtonGroup>
@@ -96,11 +117,10 @@ const Search = () => {
                   className="form-control"
                   apiKey={"AIzaSyDUJcZMahLqhK9vPGaiskdp-pfWtwTpySE"}
                   onPlaceSelected={(place) => {
-                    console.log(place);
                     let fAddrs = place.formatted_address.split(",");
                     setSearchOption({
                       ...searchOption,
-                      citystate: fAddrs[0] + ',' + fAddrs[1].replace(" ", "")
+                      cityState: fAddrs[0] + ',' + fAddrs[1].replace(" ", "")
                     });
                   }}
                 />
@@ -123,6 +143,13 @@ const Search = () => {
                       id="min"
                       name="min"
                       type="number"
+                      defaultValue={searchOption.priceMin === -1 ? 0 : searchOption.priceMin}
+                      onChange={(e) => {
+                        setSearchOption({
+                          ...searchOption,
+                          priceMin: parseInt(e.target.value)
+                        });
+                      }}
                     />
                   </FormGroup>
                   <div>To</div>
@@ -134,6 +161,13 @@ const Search = () => {
                       id="max"
                       name="max"
                       type="number"
+                      defaultValue={searchOption.priceMax === -1 ? 0 : searchOption.priceMax}
+                      onChange={(e) => {
+                        setSearchOption({
+                          ...searchOption,
+                          priceMax: parseInt(e.target.value)
+                        });
+                      }}
                     />
                   </FormGroup>
                 </div>
@@ -158,6 +192,13 @@ const Search = () => {
                   max="5" 
                   step="1"
                   className="primary"
+                  defaultValue={searchOption.beds}
+                  onChange={(e) => {
+                    setSearchOption({
+                      ...searchOption,
+                      beds: parseInt(e.target.value)
+                    });
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -179,6 +220,13 @@ const Search = () => {
                   min="0" 
                   max="5" 
                   step="1"
+                  defaultValue={searchOption.baths}
+                  onChange={(e) => {
+                    setSearchOption({
+                      ...searchOption,
+                      baths: parseInt(e.target.value)
+                    });
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -195,15 +243,15 @@ const Search = () => {
                     homeTypeList.map((o, idx) => {
                       return <Button
                               key={idx}
-                              color={searchOption.homeType === o ? 'primary' : 'secondary'}
+                              color={searchOption.homeType === o.value ? 'primary' : 'secondary'}
                               onClick={() => {
                                 setSearchOption({
                                   ...searchOption,
-                                  homeType: o
+                                  homeType: o.value
                                 });
                               }}
                             >
-                              {o}
+                              {o.label}
                             </Button>
                     })
                   }
@@ -216,9 +264,7 @@ const Search = () => {
             >
               <Button
                 color="primary"
-                onClick={() => {
-
-                }}
+                onClick={(event) => doSearchListing(event)}
               >
                 Search
               </Button>

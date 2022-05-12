@@ -6,8 +6,8 @@ var parser = require('xml2json');
 
 var axios = require('axios');
 
-exports.searchForRent = function (req, res) {
-  console.log('start');
+exports.rentalsSearchListing = function (req, res) {
+  console.log('rentalsSearchListing: ', req.body);
   
   // zillow.get('GetZestimate', {
   //   zpid: 1111111
