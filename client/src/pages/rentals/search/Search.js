@@ -27,7 +27,9 @@ import sTable from "../../../styles/Tables.module.scss";
 
 import mock from "../mocks.js";
 
-import { searchListing } from "../../../actions/rentals";
+import { rentalSearchListing } from "../../../actions/rentals";
+
+import NSpinner from "../../../components/NSpinner/NSpinner";
 
 const Search = (props) => {
 
@@ -61,12 +63,10 @@ const Search = (props) => {
     e.preventDefault();
     setCurrentPage(index);
   }
-  const pageSize = 5;
-  const pagesCount = Math.ceil(rentalSearchResults.length / pageSize);
 
   const doSearchListing = (e) => {
     e.preventDefault();
-    props.dispatch(searchListing({
+    props.dispatch(rentalSearchListing({
       ...searchOption,
       cityState,
       pageIndex: currentPage
@@ -74,7 +74,12 @@ const Search = (props) => {
   }
 
   return (
-    <div className="s-main-content">
+    <div className="s-main-content" style={{overflow: props.isFetching ? "hidden" : "auto"}}>
+      {
+        props.isFetching
+        ? <NSpinner />
+        : null
+      }
       <Widget className="widget-p-lg">
         <div className="headline-2 text-muted">
           Search For Rent
@@ -202,6 +207,9 @@ const Search = (props) => {
                     });
                   }}
                 />
+                <div className="nv-boxshadow input-range-value">
+                  {searchOption.beds}
+                </div>
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -230,6 +238,9 @@ const Search = (props) => {
                     });
                   }}
                 />
+                <div className="nv-boxshadow input-range-value">
+                  {searchOption.baths}
+                </div>
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -302,38 +313,44 @@ const Search = (props) => {
                   <label htmlFor="checkbox100"/>
                 </div>
               </th>
-              <th className="w-15">DATE</th>
-              <th className="w-15">ADDRESS</th>
-              <th className="w-15">STATE</th>
-              <th className="w-15">CITY</th>
-              <th className="w-15">ZIP</th>
-              <th className="w-25">ACTIONS</th>
+              <th className="w-20">ADDRESS</th>
+              <th className="w-10">STATE</th>
+              <th className="w-10">ZIP</th>
+              <th className="w-15">PRICE</th>
+              <th className="w-15">NAME</th>
+              <th className="w-5">BEDS</th>
+              <th className="w-5">BATHS</th>
+              <th className="w-5">SQUARE</th>
+              <th className="w-15">ACTIONS</th>
             </tr>
             </thead>
             <tbody>
             {
-              rentalSearchResults
-              .slice(
-                currentPage * pageSize,
-                (currentPage + 1) * pageSize
-              )
-              .map(item => (
+              props.rentalSearchResults
+              .map((item, idx) => (
                 <tr key={uuidv4()}>
                   <td>
                     <div className="checkbox checkbox-primary">
                       <input
-                        id={item.id}
+                        id={idx}
                         className="styled"
                         type="checkbox"
                       />
-                      <Label htmlFor={item.id} />
+                      <Label htmlFor={idx} />
                     </div>
                   </td>
-                  <td>{item.date}</td>
-                  <td>{item.address}</td>
+                  <td>
+                    <a href={item.link}>
+                      {item.address}
+                    </a>
+                  </td>
                   <td>{item.state}</td>
-                  <td>{item.city}</td>
-                  <td>{item.zip}</td>
+                  <td>{item.zipcode}</td>
+                  <td>{item.landlord_rent}</td>
+                  <td>{item.landlord_name}</td>
+                  <td>{item.beds}</td>
+                  <td>{item.baths}</td>
+                  <td>{item.square_footage}</td>
                   <td>
                     <Badge
                       color="success"
@@ -347,66 +364,42 @@ const Search = (props) => {
           </Table>
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
-              <Label htmlFor="page-size">
-                Number of Page
-              </Label>
-              <Input
-                id="page-size"
-                className={sTable.pageSize}
-                name="pageSize"
-                type="select"
-              >
-                <option>
-                  5
-                </option>
-                <option>
-                  10
-                </option>
-                <option>
-                  15
-                </option>
-                <option>
-                  20
-                </option>
-                <option>
-                  25
-                </option>
-              </Input>
+              
             </div>
-              <Pagination 
-                className="pagination-borderless" 
-                aria-label="Page navigation"
+            <Pagination 
+              className="pagination-borderless" 
+              aria-label="Page navigation"
+            >
+              <PaginationItem 
+                disabled={currentPage <= 0}
+                className={sTable.currentPageCtrl} 
               >
-                <PaginationItem 
-                  disabled={currentPage <= 0}
-                  className={sTable.currentPageCtrl} 
-                >
-                  <PaginationLink
-                    className="ml-0 px-1 text-center"
-                    onClick={e => updateCurrentPage(e, currentPage - 1)}
-                    previous
-                    href="#"
-                  />
-                </PaginationItem>
-                <Input
-                  name="current"
-                  type="number"
-                  className={sTable.currentPage}
-                  defaultValue={currentPage}
-                >
-                </Input>
-                <PaginationItem
-                  className={sTable.currentPageCtrl} 
-                  disabled={currentPage >= pagesCount - 1}
-                >
-                  <PaginationLink
-                    className="ml-0 px-1 text-center"
-                    onClick={e => updateCurrentPage(e, currentPage + 1)}
-                    next
-                    href="#"
-                  />
-                </PaginationItem>
-              </Pagination>
+                <PaginationLink
+                  className="ml-0 px-1 text-center"
+                  onClick={e => updateCurrentPage(e, currentPage - 1)}
+                  previous
+                  href="#"
+                />
+              </PaginationItem>
+              <Input
+                name="current"
+                type="number"
+                className={sTable.currentPage}
+                defaultValue={currentPage}
+              >
+              </Input>
+              <PaginationItem
+                className={sTable.currentPageCtrl} 
+                disabled={currentPage >= props.numberOfPages - 1}
+              >
+                <PaginationLink
+                  className="ml-0 px-1 text-center"
+                  onClick={e => updateCurrentPage(e, currentPage + 1)}
+                  next
+                  href="#"
+                />
+              </PaginationItem>
+            </Pagination>
           </div>
         </div>
       </Widget>
@@ -420,9 +413,10 @@ Search.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isFetching: state.auth.isFetching,
+    isFetching: state.rentals.isFetching,
     errorMessage: state.auth.errorMessage,
-    rentalSearchResults: state.rentals.rentalSearchResults
+    rentalSearchResults: state.rentals.rentalSearchResults,
+    numberOfPages: state.rentals.numberOfPages
   };
 }
 

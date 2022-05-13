@@ -16,7 +16,7 @@ exports.rentalsSearchListing = function (req, res) {
     "baths": options.baths
   })
   .then(function (response) {
-    req.json(response.data);
+    res.json(response.data);
   })
   .catch(function (err) {
     res.status(400).send(err.message);

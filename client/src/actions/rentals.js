@@ -1,24 +1,30 @@
 import { toast } from 'react-toastify';
 import axios from 'axios'
 
-export const SEARCH_LISTING_SUCCESS = 'SEARCH_LISTING_SUCCESS';
-export const SEARCH_LISTING_FAILURE = 'SEARCH_LISTING_FAILURE';
+export const RENTAL_SET_LOADING_SPINNER = 'RENTAL_SET_LOADING_SPINNER';
+export const RENTAL_SEARCH_LISTING_SUCCESS = 'RENTAL_SEARCH_LISTING_SUCCESS';
+export const RENTAL_SEARCH_LISTING_FAILURE = 'RENTAL_SEARCH_LISTING_FAILURE';
 
-export function searchListingSuccess(payload) {
+export function rentalSearchListingSuccess(payload) {
   return {
-    type: SEARCH_LISTING_SUCCESS,
+    type: RENTAL_SEARCH_LISTING_SUCCESS,
     payload
   };
 }
 
-export function searchListingFailure() {
+export function rentalSearchListingFailure() {
   return {
-    type: SEARCH_LISTING_FAILURE
+    type: RENTAL_SEARCH_LISTING_FAILURE
   };
 }
 
+export function rentalSetLoadingSpinner() {
+  return {
+    type: RENTAL_SET_LOADING_SPINNER
+  };
+}
 
-export function searchListing(payload) {
+export function rentalSearchListing(payload) {
   if (payload.cityState === '') {
     toast.error("City Location is missing", {
       autoClose: 4000,
@@ -28,6 +34,8 @@ export function searchListing(payload) {
     });
   } else {
     return (dispatch) => {
+      dispatch(rentalSetLoadingSpinner());
+
       axios.post(
         'http://localhost:8080/rentals-search-listing',
         payload,
@@ -42,7 +50,7 @@ export function searchListing(payload) {
           position: toast.POSITION.TOP_RIGHT,
         });
         console.log("scc: ", response);
-        // dispatch(searchListingSuccess(response.data));
+        dispatch(rentalSearchListingSuccess(response.data));
       })
       .catch(function (error) {
         toast.error(error.response.data, {
@@ -51,7 +59,7 @@ export function searchListing(payload) {
           hideProgressBar: true,
           position: toast.POSITION.TOP_RIGHT,
         });
-        dispatch(searchListingFailure());
+        dispatch(rentalSearchListingFailure());
       });
     }
   }

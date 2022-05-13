@@ -1,20 +1,27 @@
 import {
-  SEARCH_LISTING_SUCCESS,
-  SEARCH_LISTING_FAILURE
+  RENTAL_SEARCH_LISTING_SUCCESS,
+  RENTAL_SEARCH_LISTING_FAILURE,
+  RENTAL_SET_LOADING_SPINNER
 } from "../actions/rentals.js";
 
 export default function rentals(state = {
   isFetching: false,
   errorMessage: '',
-  rentalSearchResults: []
+  rentalSearchResults: [],
+  numberOfPages: 1
 }, action) {
   switch (action.type) {
-    case SEARCH_LISTING_SUCCESS:
+    case RENTAL_SET_LOADING_SPINNER:
+      return Object.assign({}, state, {
+        isFetching: true
+      });
+    case RENTAL_SEARCH_LISTING_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
-        rentalSearchResults: action.payload
+        numberOfPages: action.payload.number_of_pages,
+        rentalSearchResults: action.payload.data
       });
-    case SEARCH_LISTING_FAILURE:
+    case RENTAL_SEARCH_LISTING_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
       });

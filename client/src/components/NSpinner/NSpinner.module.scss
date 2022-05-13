@@ -1,0 +1,11 @@
+@import "../../styles/helpers";
+.nspinnerContainer {
+  height: 100%;
+  position: absolute;
+  z-index: 11;
+  width: 100%;
+  background: #4d53e01c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

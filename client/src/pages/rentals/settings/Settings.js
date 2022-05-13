@@ -16,7 +16,7 @@ import "line-awesome/dist/line-awesome/css/line-awesome.min.css";
 import "eva-icons/style/eva-icons.css";
 import s from "./Settings.module.scss";
 
-const Settings = () => {
+const Settings = (props) => {
   return (
     <div className="s-main-content">
       <Widget className="widget-p-lg">
@@ -252,6 +252,9 @@ const Settings = () => {
             >
               <Button
                 color="primary"
+                onClick={() => {
+
+                }}
               >
                 Save
               </Button>
@@ -263,4 +266,15 @@ const Settings = () => {
   );
 }
 
-export default Settings;
+Settings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+}
+
+function mapStateToProps(state) {
+  return {
+    isFetching: state.rentals.isFetching,
+    errorMessage: state.auth.errorMessage
+  };
+}
+
+export default withRouter(connect(mapStateToProps)(Settings));
