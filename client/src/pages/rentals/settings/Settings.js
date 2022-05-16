@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import classnames from "classnames";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import {
   Row,
   Col,
@@ -15,8 +17,22 @@ import "font-awesome/css/font-awesome.min.css";
 import "line-awesome/dist/line-awesome/css/line-awesome.min.css";
 import "eva-icons/style/eva-icons.css";
 import s from "./Settings.module.scss";
+import { rentalSaveSettings } from "../../../actions/rentals";
 
 const Settings = (props) => {
+
+  const [settings, setSettings] = useState(props.settings);
+
+  // useEffect(() => {
+  //   setSettings(props.settings);
+  // });
+
+  const doSaveSettings = (e) => {
+    e.preventDefault();
+    console.log('do save settings: ', settings);
+    props.dispatch(rentalSaveSettings(settings));
+  }
+
   return (
     <div className="s-main-content">
       <Widget className="widget-p-lg">
@@ -39,7 +55,14 @@ const Settings = (props) => {
                 $&nbsp;<Input
                   id="min-monthly-profit"
                   name="minMonthlyProfit"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.desiredMinMonthlyProfits}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        desiredMinMonthlyProfits: parseInt(e.target.value)
+                    }));
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -57,7 +80,14 @@ const Settings = (props) => {
                 <Input
                   id="airbnb-fee"
                   name="airbnbFee"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.airbnbFee}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        airbnbFee: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;%
               </Col>
             </FormGroup>
@@ -75,7 +105,14 @@ const Settings = (props) => {
                 <Input
                   id="property-management"
                   name="propertyManagement"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.propertyManagement}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        propertyManagement: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;%
               </Col>
             </FormGroup>
@@ -93,7 +130,14 @@ const Settings = (props) => {
                 <Input
                   id="avg-rental-tax"
                   name="avgRentalTax"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.averageRentalTax}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        averageRentalTax: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;%
               </Col>
               <Col 
@@ -116,7 +160,14 @@ const Settings = (props) => {
                 <Input
                   id="ongoing-mf"
                   name="ongoingMf"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.ongoingMF}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        ongoingMF: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;%
               </Col>
             </FormGroup>
@@ -134,8 +185,40 @@ const Settings = (props) => {
                 $&nbsp;<Input
                   id="internet-utilities"
                   name="internetUtilities"
-                  type="text"
-                />
+                  type="number"
+                  defaultValue={settings.internetUtility}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        internetUtility: parseInt(e.target.value)
+                    }));
+                  }}
+                />&nbsp;/m
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Label
+                for="short-term-rt-insurance"
+                sm={4}
+              >
+                Short term rental and tenant insurance 
+              </Label>
+              <Col 
+                sm={8}
+                className="d-flex align-items-center"
+              >
+                $&nbsp;<Input
+                  id="short-term-rt-insurance"
+                  name="shortTermRTInsurance"
+                  type="number"
+                  defaultValue={settings.shortTermRTInsurance}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        shortTermRTInsurance: parseInt(e.target.value)
+                    }));
+                  }}
+                />&nbsp;/yr
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -152,7 +235,14 @@ const Settings = (props) => {
                 $&nbsp;<Input
                   id="lls"
                   name="lls"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.landscapeLawnSnow}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        landscapeLawnSnow: parseInt(e.target.value)
+                    }));
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -170,7 +260,14 @@ const Settings = (props) => {
                 $&nbsp;<Input
                   id="avg-furniture-costs"
                   name="avgFurnitureCosts"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.avgFurnitureCost}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        avgFurnitureCost: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;per Sq.Ft
               </Col>
             </FormGroup>
@@ -188,7 +285,14 @@ const Settings = (props) => {
                 $&nbsp;<Input
                   id="avg-costs"
                   name="avgFCosts"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.avgCostPerAppliance}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        avgCostPerAppliance: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;per Appliance
               </Col>
             </FormGroup>
@@ -206,7 +310,14 @@ const Settings = (props) => {
                 $&nbsp;<Input
                   id="sdrm"
                   name="sdrm"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.securityDepositRentMultiplier}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        securityDepositRentMultiplier: parseInt(e.target.value)
+                    }));
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -224,7 +335,14 @@ const Settings = (props) => {
                 $&nbsp;<Input
                   id="avg-airdna-rehab"
                   name="avgAirdnaRehab"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.avgAirdnaRehab}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        avgAirdnaRehab: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;per Sq.Ft
               </Col>
             </FormGroup>
@@ -239,10 +357,17 @@ const Settings = (props) => {
                 sm={8}
                 className="d-flex align-items-center"
               >
-                <Input
+                $&nbsp;<Input
                   id="avg-supply-budget"
                   name="avgSupplyBudget"
-                  type="text"
+                  type="number"
+                  defaultValue={settings.avgSupplyBudget}
+                  onChange={(e) => {
+                    setSettings(prevSettings => ({
+                        ...prevSettings,
+                        avgSupplyBudget: parseInt(e.target.value)
+                    }));
+                  }}
                 />&nbsp;per Night
               </Col>
             </FormGroup>
@@ -252,9 +377,7 @@ const Settings = (props) => {
             >
               <Button
                 color="primary"
-                onClick={() => {
-
-                }}
+                onClick={(event) => doSaveSettings(event)}
               >
                 Save
               </Button>
@@ -273,7 +396,8 @@ Settings.propTypes = {
 function mapStateToProps(state) {
   return {
     isFetching: state.rentals.isFetching,
-    errorMessage: state.auth.errorMessage
+    errorMessage: state.auth.errorMessage,
+    settings: state.rentals.settings
   };
 }
 

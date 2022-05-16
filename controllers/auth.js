@@ -4,25 +4,6 @@ var express = require("express"),
     jwt = require("jwt-simple");
 
 exports.login = function (req, res) {
-  // User.findOne({ username: req.body.username, password: req.body.password }, (err, user) => {
-  //   if (err) {
-  //     // console.log("Error Happened In auth /token Route");
-  //     res.status(400).send(err.message);
-  //   } else {
-  //     if (user) {
-  //       var payload = {
-  //         id: user.id,
-  //         expire: Date.now() + 1000 * 60 * 60 * 24 * 7, //7 days
-  //       };
-  //       var token = jwt.encode(payload, config.jwtSecret);
-  //       res.json({
-  //         token: token,
-  //       });
-  //     } else {
-  //       res.status(400).send("User Not Found");
-  //     }
-  //   }
-  // });
   passport.authenticate('local', function (err, user, info) { 
     if (err) {
       res.json({success: false, message: err})
