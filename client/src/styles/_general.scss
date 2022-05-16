@@ -121,3 +121,24 @@ input[type="range"]::-webkit-slider-thumb:active {
   margin-top: 4px;
   font-weight: bold;
 }
+
+.table-responsive {
+  overflow-y: auto;
+}
+
+table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: $violet;
+  color: white;
+}
+
+table tbody td {
+  z-index: 1;
+}
+
+ul.pagination {
+  margin-bottom: 0px;
+  margin-top: 15px;
+}

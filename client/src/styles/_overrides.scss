@@ -293,10 +293,20 @@ table > thead > tr > th {
   tbody {
     tr:nth-of-type(odd) {
       background-color: $base-light-gray;
+
+      td {
+        background-color: $base-light-gray;
+      }
     }
-    td {
-      border: none;
+
+    tr:nth-of-type(even) {
+      background-color: white;
+
+      td {
+        background-color: white;
+      }
     }
+    
   }
 }
 
@@ -306,6 +316,7 @@ table > thead > tr > th {
       background-color: $violet-trans;
       td {
         color: white;
+        background-color: $violet-trans;
       }
     }
   }

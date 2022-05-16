@@ -61,3 +61,8 @@
 .shortlist {
   cursor: pointer;
 }
+
+.stickyFixed {
+  position: sticky;
+  z-index: 2;
+}

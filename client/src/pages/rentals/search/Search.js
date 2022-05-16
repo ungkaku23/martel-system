@@ -297,71 +297,96 @@ const Search = (props) => {
           </Button>
         </div>
         <div className="widget-table-overflow mt-4">
-          <Table 
-            className={`table-striped table-borderless table-hover ${sTable.statesTable}`} 
-            responsive
+          <div 
+            className="table-responsive"
+            style={{
+              height: '350px'
+            }}
           >
-            <thead>
-            <tr>
-              <th className={sTable.checkboxCol}>
-                <div className="checkbox checkbox-primary">
-                  <input
-                    className="styled"
-                    id="checkbox100"
-                    type="checkbox"
-                  />
-                  <label htmlFor="checkbox100"/>
-                </div>
-              </th>
-              <th className="w-20">ADDRESS</th>
-              <th className="w-10">STATE</th>
-              <th className="w-10">ZIP</th>
-              <th className="w-15">PRICE</th>
-              <th className="w-15">NAME</th>
-              <th className="w-5">BEDS</th>
-              <th className="w-5">BATHS</th>
-              <th className="w-5">SQUARE</th>
-              <th className="w-15">ACTIONS</th>
-            </tr>
-            </thead>
-            <tbody>
-            {
-              props.rentalSearchResults
-              .map((item, idx) => (
-                <tr key={uuidv4()}>
-                  <td>
-                    <div className="checkbox checkbox-primary">
-                      <input
-                        id={idx}
-                        className="styled"
-                        type="checkbox"
-                      />
-                      <Label htmlFor={idx} />
-                    </div>
-                  </td>
-                  <td>
-                    <a href={item.link}>
-                      {item.address}
-                    </a>
-                  </td>
-                  <td>{item.state}</td>
-                  <td>{item.zipcode}</td>
-                  <td>{item.landlord_rent}</td>
-                  <td>{item.landlord_name}</td>
-                  <td>{item.beds}</td>
-                  <td>{item.baths}</td>
-                  <td>{item.square_footage}</td>
-                  <td>
-                    <Badge
-                      color="success"
-                      className={sTable.shortlist}>
-                        Add To Shortlist
-                    </Badge>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+            <Table 
+              className={`table-striped table-borderless table-hover ${sTable.statesTable}`}
+              style={{
+                width: '1300px'
+              }}
+            >
+              <thead>
+              <tr>
+                <th 
+                  width="50px"
+                  className={sTable.checkboxCol + ' ' + sTable.stickyFixed}
+                  style={{left: '0px'}}
+                >
+                  <div className="checkbox checkbox-primary">
+                    <input
+                      className="styled"
+                      id="checkbox100"
+                      type="checkbox"
+                    />
+                    <label htmlFor="checkbox100"/>
+                  </div>
+                </th>
+                <th 
+                  width="300" 
+                  className={sTable.stickyFixed}
+                  style={{left: '50px'}}
+                >
+                  ADDRESS
+                </th>
+                <th width="100">STATE</th>
+                <th width="100">ZIP</th>
+                <th width="150">PRICE</th>
+                <th width="150">NAME</th>
+                <th width="100">BEDS</th>
+                <th width="100">BATHS</th>
+                <th width="150">SQUARE</th>
+                <th width="150">ACTIONS</th>
+              </tr>
+              </thead>
+              <tbody>
+              {
+                props.rentalSearchResults
+                .map((item, idx) => (
+                  <tr key={uuidv4()}>
+                    <td 
+                      className={sTable.stickyFixed}
+                      style={{left: '0px'}}
+                    >
+                      <div className="checkbox checkbox-primary">
+                        <input
+                          id={idx}
+                          className="styled"
+                          type="checkbox"
+                        />
+                        <Label htmlFor={idx} />
+                      </div>
+                    </td>
+                    <td 
+                      className={sTable.stickyFixed}
+                      style={{left: '50px'}}
+                    >
+                      <a href={item.link}>
+                        {item.address}
+                      </a>
+                    </td>
+                    <td>{item.state}</td>
+                    <td>{item.zipcode}</td>
+                    <td>{item.landlord_rent}</td>
+                    <td>{item.landlord_name}</td>
+                    <td>{item.beds}</td>
+                    <td>{item.baths}</td>
+                    <td>{item.square_footage}</td>
+                    <td>
+                      <Badge
+                        color="success"
+                        className={sTable.shortlist}>
+                          Add To Shortlist
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
               
