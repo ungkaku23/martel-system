@@ -6,6 +6,8 @@ export const RENTAL_SEARCH_LISTING_SUCCESS = 'RENTAL_SEARCH_LISTING_SUCCESS';
 export const RENTAL_SEARCH_LISTING_FAILURE = 'RENTAL_SEARCH_LISTING_FAILURE';
 export const RENTAL_SAVE_SETTINGS_SUCCESS = 'RENTAL_SAVE_SETTINGS_SUCCESS';
 export const RENTAL_SAVE_SETTINGS_FAILURE = 'RENTAL_SAVE_SETTINGS_FAILURE';
+export const RENTAL_LOAD_SETTINGS_SUCCESS = 'RENTAL_LOAD_SETTINGS_SUCCESS';
+export const RENTAL_LOAD_SETTINGS_FAILURE = 'RENTAL_LOAD_SETTINGS_FAILURE';
 
 export function rentalSearchListingSuccess(payload) {
   return {
@@ -36,6 +38,19 @@ export function rentalSaveSettingsSuccess(payload) {
 export function rentalSaveSettingsFailure() {
   return {
     type: RENTAL_SAVE_SETTINGS_FAILURE
+  };
+}
+
+export function rentalLoadSettingsSuccess(payload) {
+  return {
+    type: RENTAL_LOAD_SETTINGS_SUCCESS,
+    payload
+  };
+}
+
+export function rentalLoadSettingsFailure() {
+  return {
+    type: RENTAL_LOAD_SETTINGS_FAILURE
   };
 }
 
@@ -106,6 +121,36 @@ export function rentalSaveSettings(payload) {
         position: toast.POSITION.TOP_RIGHT,
       });
       dispatch(rentalSaveSettingsFailure());
+    });
+  }
+}
+
+export function rentalLoadSettings(payload) {
+  return (dispatch) => {
+    dispatch(rentalSetLoadingSpinner());
+
+    axios.get(
+      'http://localhost:8080/rentals-load-settings',
+      { 
+        headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
+      })
+    .then(function (response) {
+      toast.success("Settings is loaded successfully", {
+        autoClose: 4000,
+        closeButton: false,
+        hideProgressBar: true,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      dispatch(rentalLoadSettingsSuccess(response.data));
+    })
+    .catch(function (error) {
+      toast.error(error.response.data, {
+        autoClose: 4000,
+        closeButton: false,
+        hideProgressBar: true,
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      dispatch(rentalLoadSettingsFailure());
     });
   }
 }

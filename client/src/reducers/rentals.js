@@ -3,7 +3,9 @@ import {
   RENTAL_SEARCH_LISTING_FAILURE,
   RENTAL_SET_LOADING_SPINNER,
   RENTAL_SAVE_SETTINGS_SUCCESS,
-  RENTAL_SAVE_SETTINGS_FAILURE
+  RENTAL_SAVE_SETTINGS_FAILURE,
+  RENTAL_LOAD_SETTINGS_SUCCESS,
+  RENTAL_LOAD_SETTINGS_FAILURE
 } from "../actions/rentals.js";
 
 export default function rentals(state = {
@@ -47,6 +49,36 @@ export default function rentals(state = {
         isFetching: false
       });
     case RENTAL_SAVE_SETTINGS_FAILURE:
+      return Object.assign({}, state, {
+        isFetching: false
+      });
+    case RENTAL_LOAD_SETTINGS_SUCCESS:
+      console.log('RENTAL_LOAD_SETTINGS_SUCCESS: ', action.payload);
+      if (action.payload) {
+        return Object.assign({}, state, {
+          isFetching: false,
+          settings: {
+            desiredMinMonthlyProfits: action.payload.desired_min_monthly_profits,
+            airbnbFee: action.payload.airbnb_fee,
+            propertyManagement: action.payload.property_management,
+            averageRentalTax: action.payload.average_rental_tax,
+            ongoingMF: action.payload.ongoing_m_f,
+            internetUtility: action.payload.internet_utility,
+            shortTermRTInsurance: action.payload.short_term_r_t_insurance,
+            landscapeLawnSnow: action.payload.landscape_lawn_snow,
+            avgFurnitureCost: action.payload.avg_furniture_cost,
+            avgCostPerAppliance: action.payload.avg_cost_per_appliance,
+            securityDepositRentMultiplier: action.payload.security_deposit_rent_multiplier,
+            avgAirdnaRehab: action.payload.avg_airdna_rehab,
+            avgSupplyBudget: action.payload.avg_supply_budget
+          }
+        });
+      }
+
+      return Object.assign({}, state, {
+        isFetching: false
+      }); 
+    case RENTAL_LOAD_SETTINGS_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
       });

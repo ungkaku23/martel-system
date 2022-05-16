@@ -71,5 +71,16 @@ exports.rentalsSaveSettings = function (req, res) {
   .catch(err => {
     res.status(400).send(err.message);
   });
+}
 
+exports.rentalsLoadSettings = function (req, res) {
+  console.log('rentalsLoadSettings: ', req.user);
+  
+  Setting.findOne({user_id: req.user._id})
+  .then(doc => {
+    res.json(doc);
+  })
+  .catch(err => {
+    res.status(400).send(err.message);
+  });
 }

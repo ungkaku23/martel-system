@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useSelector } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -17,19 +17,25 @@ import "font-awesome/css/font-awesome.min.css";
 import "line-awesome/dist/line-awesome/css/line-awesome.min.css";
 import "eva-icons/style/eva-icons.css";
 import s from "./Settings.module.scss";
-import { rentalSaveSettings } from "../../../actions/rentals";
+import {
+  rentalSaveSettings,
+  rentalLoadSettings 
+} from "../../../actions/rentals";
 
 const Settings = (props) => {
 
   const [settings, setSettings] = useState(props.settings);
 
-  // useEffect(() => {
-  //   setSettings(props.settings);
-  // });
+  useEffect(() => {
+    props.dispatch(rentalLoadSettings());
+  }, []);
+
+  useEffect(() => {
+    setSettings(props.settings);
+  }, [props.settings]);
 
   const doSaveSettings = (e) => {
     e.preventDefault();
-    console.log('do save settings: ', settings);
     props.dispatch(rentalSaveSettings(settings));
   }
 
@@ -56,7 +62,7 @@ const Settings = (props) => {
                   id="min-monthly-profit"
                   name="minMonthlyProfit"
                   type="number"
-                  defaultValue={settings.desiredMinMonthlyProfits}
+                  value={settings.desiredMinMonthlyProfits}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -81,7 +87,7 @@ const Settings = (props) => {
                   id="airbnb-fee"
                   name="airbnbFee"
                   type="number"
-                  defaultValue={settings.airbnbFee}
+                  value={settings.airbnbFee}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -106,7 +112,7 @@ const Settings = (props) => {
                   id="property-management"
                   name="propertyManagement"
                   type="number"
-                  defaultValue={settings.propertyManagement}
+                  value={settings.propertyManagement}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -131,7 +137,7 @@ const Settings = (props) => {
                   id="avg-rental-tax"
                   name="avgRentalTax"
                   type="number"
-                  defaultValue={settings.averageRentalTax}
+                  value={settings.averageRentalTax}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -161,7 +167,7 @@ const Settings = (props) => {
                   id="ongoing-mf"
                   name="ongoingMf"
                   type="number"
-                  defaultValue={settings.ongoingMF}
+                  value={settings.ongoingMF}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -186,7 +192,7 @@ const Settings = (props) => {
                   id="internet-utilities"
                   name="internetUtilities"
                   type="number"
-                  defaultValue={settings.internetUtility}
+                  value={settings.internetUtility}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -211,7 +217,7 @@ const Settings = (props) => {
                   id="short-term-rt-insurance"
                   name="shortTermRTInsurance"
                   type="number"
-                  defaultValue={settings.shortTermRTInsurance}
+                  value={settings.shortTermRTInsurance}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -236,7 +242,7 @@ const Settings = (props) => {
                   id="lls"
                   name="lls"
                   type="number"
-                  defaultValue={settings.landscapeLawnSnow}
+                  value={settings.landscapeLawnSnow}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -261,7 +267,7 @@ const Settings = (props) => {
                   id="avg-furniture-costs"
                   name="avgFurnitureCosts"
                   type="number"
-                  defaultValue={settings.avgFurnitureCost}
+                  value={settings.avgFurnitureCost}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -286,7 +292,7 @@ const Settings = (props) => {
                   id="avg-costs"
                   name="avgFCosts"
                   type="number"
-                  defaultValue={settings.avgCostPerAppliance}
+                  value={settings.avgCostPerAppliance}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -311,7 +317,7 @@ const Settings = (props) => {
                   id="sdrm"
                   name="sdrm"
                   type="number"
-                  defaultValue={settings.securityDepositRentMultiplier}
+                  value={settings.securityDepositRentMultiplier}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -336,7 +342,7 @@ const Settings = (props) => {
                   id="avg-airdna-rehab"
                   name="avgAirdnaRehab"
                   type="number"
-                  defaultValue={settings.avgAirdnaRehab}
+                  value={settings.avgAirdnaRehab}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,
@@ -361,7 +367,7 @@ const Settings = (props) => {
                   id="avg-supply-budget"
                   name="avgSupplyBudget"
                   type="number"
-                  defaultValue={settings.avgSupplyBudget}
+                  value={settings.avgSupplyBudget}
                   onChange={(e) => {
                     setSettings(prevSettings => ({
                         ...prevSettings,

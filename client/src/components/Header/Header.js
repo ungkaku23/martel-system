@@ -78,13 +78,22 @@ const Header = (props) => {
             <span className="small d-none d-sm-block ml-1 mr-2 body-1">{localStorage.getItem('username')}</span>
           </DropdownToggle>
           <DropdownMenu className="navbar-dropdown profile-dropdown" style={{ width: "194px" }}>
-            <DropdownItem className={s.dropdownProfileItem}><ProfileIcon/><span>Account</span></DropdownItem>
-            <DropdownItem className={s.dropdownProfileItem}><TasksIcon/><span>Contact</span></DropdownItem>
-            <NavItem>
-              <NavLink onClick={() => doLogout()} href="#">
-                <button className="btn btn-primary rounded-pill mx-auto logout-btn" type="submit"><img src={logoutIcon} alt="Logout"/><span className="ml-1">Logout</span></button>
-              </NavLink>
-            </NavItem>
+            <DropdownItem className={s.dropdownProfileItem}>
+              <ProfileIcon/>
+              <span>Account</span>
+            </DropdownItem>
+            <DropdownItem className={s.dropdownProfileItem}>
+              <TasksIcon/><span>Contact</span>
+            </DropdownItem>
+            <div>
+              <button 
+                className="btn btn-primary rounded-pill mx-auto logout-btn" 
+                type="submit" 
+                onClick={() => doLogout()}>
+                  <img src={logoutIcon} alt="Logout"/>
+                  <span className="ml-1">Logout</span>
+              </button>
+            </div>
           </DropdownMenu>
         </Dropdown>
       </Nav>
