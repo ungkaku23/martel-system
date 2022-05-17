@@ -56,9 +56,17 @@ const Search = (props) => {
   }];
 
   const siteList = ['Zillow', 'Realtor'];
+
+  const finishedBasementVals = ['Yes', 'No'];
+  const garagesVals = ['None', '1', '2', '3+'];
+  const poolhotTubVals = ['No', 'In Complex', 'Yes Hottub', 'Yes Pool', 'Yes Both'];
+  const centralAirVals = ['Yes', 'No'];
+  const applRequiredVals = ['0', '1', '2', '3', '4', '5'];
+  const financingVals = ['Yes', 'No'];
   
   const [rentalSearchResults] = useState(mock.rentalSearchResults);
   const [currentPage, setCurrentPage] = useState(1);
+
   const updateCurrentPage = (e, index) => {
     e.preventDefault();
     setCurrentPage(index);
@@ -306,7 +314,7 @@ const Search = (props) => {
             <Table 
               className={`table-striped table-borderless table-hover ${sTable.statesTable}`}
               style={{
-                width: '1300px'
+                width: '6800px'
               }}
             >
               <thead>
@@ -314,7 +322,11 @@ const Search = (props) => {
                 <th 
                   width="50px"
                   className={sTable.checkboxCol + ' ' + sTable.stickyFixed}
-                  style={{left: '0px'}}
+                  style={{
+                    left: '0px', 
+                    zIndex: '4',
+                    width: '50px'
+                  }}
                 >
                   <div className="checkbox checkbox-primary">
                     <input
@@ -326,25 +338,61 @@ const Search = (props) => {
                   </div>
                 </th>
                 <th 
-                  width="300" 
+                  width="300px" 
                   className={sTable.stickyFixed}
-                  style={{left: '50px'}}
+                  style={{left: '50px', zIndex: '4'}}
                 >
                   ADDRESS
                 </th>
-                <th width="100">STATE</th>
-                <th width="100">ZIP</th>
-                <th width="150">PRICE</th>
-                <th width="150">NAME</th>
-                <th width="100">BEDS</th>
-                <th width="100">BATHS</th>
-                <th width="150">SQUARE</th>
-                <th width="150">ACTIONS</th>
+                <th width="100px">STATE</th>
+                <th width="100px">ZIP</th>
+                <th width="150px">PRICE</th>
+                <th width="150px">NAME</th>
+                <th width="150px">CONTACT</th>
+                <th width="150px">AirDNA ADR</th>
+                <th width="100px">AirDNA OCCUPANCY %</th>
+                <th width="100px">BEDS</th>
+                <th width="100px">BATHS</th>
+                <th width="150px">SQUARE</th>
+                <th width="150px">Finished Basement</th>
+                <th width="150px"># of Garages</th>
+                <th width="150px">Pool/Hot tub</th>
+                <th width="150px">Central Air</th>
+                <th width="150px">Appl Required</th>
+                <th width="150px">Financing</th>
+                <th width="150px">Estimate Airbnb Rehab</th>
+                <th width="150px">First & Security</th>
+                <th width="150px">Furniture Cost</th>
+                <th width="150px">Appliance Cost</th>
+                <th width="150px">Additional Costs</th>
+                <th width="150px">Monthly Airdna Income</th>
+                <th width="150px">Airbnb Fee</th>
+                <th width="150px">Maintenance</th>
+                <th width="150px">Internet & Utilities</th>
+                <th width="150px">Landscape</th>
+                <th width="150px">Insurance</th>
+                <th width="150px">Property Management</th>
+                <th width="150px">Landlord Rent</th>
+                <th width="150px">Rental Tax</th>
+                <th width="150px">Supplies</th>
+                <th width="150px">Pool Maint</th>
+                <th width="150px">Interest</th>
+                <th width="150px">All In Expenses</th>
+                <th width="150px">Monthly Cashflow</th>
+                <th width="150px">Yearly Cashflow</th>
+                <th width="150px">Cash on Cash Return</th>
+                <th width="150px">AirDNA Comp #1</th>
+                <th width="150px">AirDNA Comp #2</th>
+                <th width="150px">AirDNA Comp #3</th>
+                <th width="150px">AirDNA Comp #4</th>
+                <th width="150px">AirDNA Comp #5</th>
+                <th width="250px">Image Links</th>
+                <th width="150px">ACTIONS</th>
               </tr>
               </thead>
               <tbody>
               {
-                props.rentalSearchResults
+                rentalSearchResults
                 .map((item, idx) => (
                   <tr key={uuidv4()}>
                     <td 
@@ -361,20 +409,150 @@ const Search = (props) => {
                       </div>
                     </td>
                     <td 
-                      className={sTable.stickyFixed}
+                      className={sTable.stickyFixed + ' ' + sTable.scrapedBg}
                       style={{left: '50px'}}
                     >
-                      <a href={item.link}>
+                      <a 
+                        href={item.link}
+                        target="_blank"
+                      >
                         {item.address}
                       </a>
                     </td>
-                    <td>{item.state}</td>
-                    <td>{item.zipcode}</td>
-                    <td>{item.landlord_rent}</td>
-                    <td>{item.landlord_name}</td>
-                    <td>{item.beds}</td>
-                    <td>{item.baths}</td>
-                    <td>{item.square_footage}</td>
+                    <td className={sTable.scrapedBg}>{item.state}</td>
+                    <td className={sTable.scrapedBg}>{item.zipcode}</td>
+                    <td className={sTable.scrapedBg}>{item.landlord_rent}</td>
+                    <td className={sTable.scrapedBg}>{item.landlord_name}</td>
+                    <td className={sTable.scrapedBg}>{item.landlord_contact}</td>
+                    <td className={sTable.airDNABg}>{item.airdna_adr}</td>
+                    <td className={sTable.airDNABg}>{item.airdna_occupancy}</td>
+                    <td className={sTable.scrapedBg}>{item.beds}</td>
+                    <td className={sTable.scrapedBg}>{item.baths}</td>
+                    <td className={sTable.scrapedBg}>{item.square_footage}</td>
+                    <td className={sTable.manualBg}>
+                      <Input
+                        id="finishedBasement"
+                        name="finishedBasement"
+                        type="select"
+                      >
+                        {
+                          finishedBasementVals.map((o, idx) => {
+                            return <option>
+                                    {o}
+                                  </option>
+                          })
+                        }
+                      </Input>
+                    </td>
+                    <td className={sTable.manualBg}>
+                      <Input
+                        id="garages"
+                        name="garages"
+                        type="select"
+                      >
+                        {
+                          garagesVals.map((o, idx) => {
+                            return <option>
+                                    {o}
+                                  </option>
+                          })
+                        }
+                      </Input>
+                    </td>
+                    <td className={sTable.manualBg}>
+                      <Input
+                        id="poolhotTub"
+                        name="poolhotTub"
+                        type="select"
+                      >
+                        {
+                          poolhotTubVals.map((o, idx) => {
+                            return <option>
+                                    {o}
+                                  </option>
+                          })
+                        }
+                      </Input>
+                    </td>
+                    <td className={sTable.manualBg}>
+                      <Input
+                        id="centralAir"
+                        name="centralAir"
+                        type="select"
+                      >
+                        {
+                          centralAirVals.map((o, idx) => {
+                            return <option>
+                                    {o}
+                                  </option>
+                          })
+                        }
+                      </Input>
+                    </td>
+                    <td className={sTable.manualBg}>
+                      <Input
+                        id="applRequired"
+                        name="applRequired"
+                        type="select"
+                      >
+                        {
+                          applRequiredVals.map((o, idx) => {
+                            return <option>
+                                    {o}
+                                  </option>
+                          })
+                        }
+                      </Input>
+                    </td>
+                    <td className={sTable.manualBg}>
+                      <Input
+                        id="financing"
+                        name="financing"
+                        type="select"
+                      >
+                        {
+                          financingVals.map((o, idx) => {
+                            return <option>
+                                    {o}
+                                  </option>
+                          })
+                        }
+                      </Input>
+                    </td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.manualBg}>
+                      <Input
+                        id="additionalCosts"
+                        name="additionalCosts"
+                        type="number"
+                      >
+                      </Input>
+                    </td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.airDNABg}></td>
+                    <td className={sTable.airDNABg}></td>
+                    <td className={sTable.airDNABg}></td>
+                    <td className={sTable.airDNABg}></td>
+                    <td className={sTable.airDNABg}></td>
+                    <td className={sTable.scrapedBg}></td>
                     <td>
                       <Badge
                         color="success"

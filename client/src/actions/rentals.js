@@ -79,6 +79,15 @@ export function rentalSearchListing(payload) {
           hideProgressBar: true,
           position: toast.POSITION.TOP_RIGHT,
         });
+
+        // demo data for AirDNA
+        let data = Object.assign([], response.data);
+        data = data.map(o => ({
+          ...o,
+          airdna_adr: 115,
+          airdna_occupancy: 34
+        }));
+
         dispatch(rentalSearchListingSuccess(response.data));
       })
       .catch(function (error) {

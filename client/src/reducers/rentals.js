@@ -27,7 +27,8 @@ export default function rentals(state = {
     securityDepositRentMultiplier: 0,
     avgAirdnaRehab: 0,
     avgSupplyBudget: 0
-  }
+  },
+  manualInfos: []
 }, action) {
   switch (action.type) {
     case RENTAL_SET_LOADING_SPINNER:

@@ -66,3 +66,23 @@
   position: sticky;
   z-index: 2;
 }
+
+.scrapedBg {
+  background-color: $scraped-color !important;
+  color: white !important;
+}
+
+.airDNABg {
+  background-color: $airdna-color !important;
+  color: white !important;
+}
+
+.manualBg {
+  background-color: $manual-color !important;
+  color: white !important;
+}
+
+.autoBg {
+  background-color: $auto-color !important;
+  color: white !important;
+}
