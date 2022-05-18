@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -16,7 +16,8 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
-  Badge
+  Badge,
+  Select
 } from "reactstrap";
 
 import Autocomplete from "react-google-autocomplete";
@@ -27,7 +28,10 @@ import sTable from "../../../styles/Tables.module.scss";
 
 import mock from "../mocks.js";
 
-import { rentalSearchListing } from "../../../actions/rentals";
+import { 
+  rentalSearchListing,
+  rentalLoadSettings
+} from "../../../actions/rentals";
 
 import NSpinner from "../../../components/NSpinner/NSpinner";
 
@@ -41,6 +45,8 @@ const Search = (props) => {
     beds: 0,
     baths: 0
   });
+
+  const [rentalExtraInfos, setRentalExtraInfos] = useState([]);
 
   const [cityState, setCityState] = useState("");
 
@@ -79,6 +85,87 @@ const Search = (props) => {
       cityState,
       pageIndex: currentPage
     }));
+  }
+
+  useEffect(() => {
+    props.dispatch(rentalLoadSettings());
+
+    let tRentalExtraInfos = localStorage.getItem("rentalExtraInfos");
+    if (!tRentalExtraInfos) {
+      tRentalExtraInfos = [];
+    } else {
+      tRentalExtraInfos = JSON.parse(tRentalExtraInfos);
+    }
+
+    setRentalExtraInfos(tRentalExtraInfos);
+  }, []);
+
+  const updateRentalExtraInfos = (link, field, value) => {
+    let tRentalExtraInfos = rentalExtraInfos;
+
+    let isUpdated = false;
+
+    tRentalExtraInfos = tRentalExtraInfos.map(o => {
+      if (o.link === link) {
+        isUpdated = true;
+        return {
+          ...o,
+          [field]: value
+        };
+      }
+
+      return o;
+    });
+
+    if (!isUpdated) {
+      tRentalExtraInfos.push({
+        "link": link,
+        [field]: value
+      });
+    }
+
+    setRentalExtraInfos(tRentalExtraInfos);
+    localStorage.setItem("rentalExtraInfos", JSON.stringify(tRentalExtraInfos));
+  }
+
+  const loadRentalExtraInfo = (link, field) => {
+    let tRentalExtraInfos = rentalExtraInfos;
+
+    let tRentalExtraInfo = tRentalExtraInfos.find(o => o.link === link);
+    if (tRentalExtraInfo && tRentalExtraInfo.hasOwnProperty(field)) {
+      if (field === "additionalCosts") {
+        return parseInt(tRentalExtraInfo[field]);
+      }
+
+      return tRentalExtraInfo[field];
+    }
+
+    switch (field) {
+      case "finished_basement":
+        return finishedBasementVals[0];
+        break;
+      case "garages":
+        return garagesVals[0];
+        break;
+      case "poolhotTub":
+        return poolhotTubVals[0];
+        break;
+      case "centralAir":
+        return centralAirVals[0];
+        break;
+      case "applRequired":
+        return applRequiredVals[0];
+        break;
+      case "financing":
+        return financingVals[0];
+        break;
+      case "additionalCosts":
+        return 0;
+        break;
+    
+      default:
+        break;
+    }
   }
 
   return (
@@ -304,6 +391,40 @@ const Search = (props) => {
             Add Multiples
           </Button>
         </div>
+        <Row className="mt-4">
+          <Col>
+            <div 
+              className={`text-center ${sTable.scrapedBg}`}
+              style={{fontSize: '12px'}}
+            >
+              Zillor/Realtor Data
+            </div>
+          </Col>
+          <Col>
+            <div 
+              className={`text-center ${sTable.airDNABg}`}
+              style={{fontSize: '12px'}}
+            >
+              AirDNA Data
+            </div>
+          </Col>
+          <Col>
+            <div 
+              className={`text-center ${sTable.manualBg}`}
+              style={{fontSize: '12px'}}
+            >
+              Manual Data
+            </div>
+          </Col>
+          <Col>
+            <div 
+              className={`text-center ${sTable.autoBg}`}
+              style={{fontSize: '12px'}}
+            >
+              Automatic Calculates
+            </div>
+          </Col>
+        </Row>
         <div className="widget-table-overflow mt-4">
           <div 
             className="table-responsive"
@@ -433,26 +554,40 @@ const Search = (props) => {
                       <Input
                         id="finishedBasement"
                         name="finishedBasement"
+                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "finished_basement")}
                         type="select"
+                        onChange={(e) => {
+                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "finished_basement", e.target.value);
+                        }}
                       >
                         {
                           finishedBasementVals.map((o, idx) => {
-                            return <option>
+                            return <option 
+                                      index={'fb' + idx} 
+                                      value={o}
+                                    >
                                     {o}
                                   </option>
                           })
                         }
-                      </Input>
+                      </Input> 
                     </td>
                     <td className={sTable.manualBg}>
                       <Input
                         id="garages"
                         name="garages"
+                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "garages")}
                         type="select"
+                        onChange={(e) => {
+                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "garages", e.target.value);
+                        }}
                       >
                         {
                           garagesVals.map((o, idx) => {
-                            return <option>
+                            return <option
+                                      index={'gar' + idx} 
+                                      value={o}
+                                    >
                                     {o}
                                   </option>
                           })
@@ -463,11 +598,18 @@ const Search = (props) => {
                       <Input
                         id="poolhotTub"
                         name="poolhotTub"
+                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "poolhotTub")}
                         type="select"
+                        onChange={(e) => {
+                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "poolhotTub", e.target.value);
+                        }}
                       >
                         {
                           poolhotTubVals.map((o, idx) => {
-                            return <option>
+                            return <option
+                                      index={'pol' + idx} 
+                                      value={o}
+                                    >
                                     {o}
                                   </option>
                           })
@@ -478,11 +620,18 @@ const Search = (props) => {
                       <Input
                         id="centralAir"
                         name="centralAir"
+                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "centralAir")}
                         type="select"
+                        onChange={(e) => {
+                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "centralAir", e.target.value);
+                        }}
                       >
                         {
                           centralAirVals.map((o, idx) => {
-                            return <option>
+                            return <option
+                                      index={'cent' + idx} 
+                                      value={o}
+                                    >
                                     {o}
                                   </option>
                           })
@@ -493,11 +642,18 @@ const Search = (props) => {
                       <Input
                         id="applRequired"
                         name="applRequired"
+                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "applRequired")}
                         type="select"
+                        onChange={(e) => {
+                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "applRequired", e.target.value);
+                        }}
                       >
                         {
                           applRequiredVals.map((o, idx) => {
-                            return <option>
+                            return <option
+                                      index={'appl' + idx} 
+                                      value={o}
+                                    >
                                     {o}
                                   </option>
                           })
@@ -508,18 +664,25 @@ const Search = (props) => {
                       <Input
                         id="financing"
                         name="financing"
+                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "financing")}
                         type="select"
+                        onChange={(e) => {
+                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "financing", e.target.value);
+                        }}
                       >
                         {
                           financingVals.map((o, idx) => {
-                            return <option>
+                            return <option
+                                      index={'fin' + idx} 
+                                      value={o}
+                                    >
                                     {o}
                                   </option>
                           })
                         }
                       </Input>
                     </td>
-                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}>1</td>
                     <td className={sTable.autoBg}></td>
                     <td className={sTable.autoBg}></td>
                     <td className={sTable.autoBg}></td>
@@ -527,7 +690,11 @@ const Search = (props) => {
                       <Input
                         id="additionalCosts"
                         name="additionalCosts"
+                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "additionalCosts")}
                         type="number"
+                        onChange={(e) => {
+                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "additionalCosts", parseInt(e.target.value));
+                        }}
                       >
                       </Input>
                     </td>
@@ -552,7 +719,7 @@ const Search = (props) => {
                     <td className={sTable.airDNABg}></td>
                     <td className={sTable.airDNABg}></td>
                     <td className={sTable.airDNABg}></td>
-                    <td className={sTable.scrapedBg}></td>
+                    <td className={sTable.scrapedBg}>{item.imgs}</td>
                     <td>
                       <Badge
                         color="success"
@@ -619,7 +786,8 @@ function mapStateToProps(state) {
     isFetching: state.rentals.isFetching,
     errorMessage: state.auth.errorMessage,
     rentalSearchResults: state.rentals.rentalSearchResults,
-    numberOfPages: state.rentals.numberOfPages
+    numberOfPages: state.rentals.numberOfPages,
+    settings: state.rentals.settings
   };
 }
 
