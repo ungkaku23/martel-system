@@ -502,11 +502,11 @@ const Search = (props) => {
                 <th width="150px">Monthly Cashflow</th>
                 <th width="150px">Yearly Cashflow</th>
                 <th width="150px">Cash on Cash Return</th>
-                <th width="150px">AirDNA Comp #1</th>
+                {/* <th width="150px">AirDNA Comp #1</th>
                 <th width="150px">AirDNA Comp #2</th>
                 <th width="150px">AirDNA Comp #3</th>
                 <th width="150px">AirDNA Comp #4</th>
-                <th width="150px">AirDNA Comp #5</th>
+                <th width="150px">AirDNA Comp #5</th> */}
                 <th width="250px">Image Links</th>
                 <th width="150px">ACTIONS</th>
               </tr>
@@ -714,11 +714,11 @@ const Search = (props) => {
                     <td className={sTable.autoBg}></td>
                     <td className={sTable.autoBg}></td>
                     <td className={sTable.autoBg}></td>
+                    {/* <td className={sTable.airDNABg}></td>
                     <td className={sTable.airDNABg}></td>
                     <td className={sTable.airDNABg}></td>
                     <td className={sTable.airDNABg}></td>
-                    <td className={sTable.airDNABg}></td>
-                    <td className={sTable.airDNABg}></td>
+                    <td className={sTable.airDNABg}></td> */}
                     <td className={sTable.scrapedBg}>{item.imgs}</td>
                     <td>
                       <Badge
