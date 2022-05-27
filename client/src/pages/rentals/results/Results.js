@@ -26,8 +26,6 @@ import "eva-icons/style/eva-icons.css";
 import sTable from "../../../styles/Tables.module.scss";
 import s from "./Results.module.scss";
 
-import mock from "../mocks.js";
-
 import Widget from "../../../components/Widget/Widget";
 
 const Results = () => {
@@ -38,7 +36,7 @@ const Results = () => {
   const [reportModal, setReportModal] = React.useState(false);
   const toggleReportModal = () => setReportModal(!reportModal);
 
-  const [rentalSearchResults] = useState(mock.rentalSearchResults);
+  const [rentalSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const updateCurrentPage = (e, index) => {
     e.preventDefault();

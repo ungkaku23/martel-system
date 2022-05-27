@@ -28,8 +28,6 @@ import Widget from "../../../components/Widget/Widget";
 
 import sTable from "../../../styles/Tables.module.scss";
 
-import mock from "../mocks.js";
-
 import { 
   rentalSearchListing,
   rentalLoadSettings,
@@ -37,6 +35,7 @@ import {
 } from "../../../actions/rentals";
 
 import NSpinner from "../../../components/NSpinner/NSpinner";
+import { jar } from "request";
 
 const Search = (props) => {
 
@@ -48,8 +47,6 @@ const Search = (props) => {
     beds: 0,
     baths: 0
   });
-
-  const [rentalExtraInfos, setRentalExtraInfos] = useState([]);
 
   const [cityState, setCityState] = useState("");
 
@@ -73,8 +70,10 @@ const Search = (props) => {
   const applRequiredVals = ['0', '1', '2', '3', '4', '5'];
   const financingVals = ['Yes', 'No'];
   
-  const [listing] = useState(mock.listing);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [prevListing, setPrevListing] = useState([]);
+  const [prevSettings, setPrevSettings] = useState({});
 
   const updateCurrentPage = (e, index) => {
     e.preventDefault();
@@ -91,118 +90,76 @@ const Search = (props) => {
   }
 
   useEffect(() => {
-    props.dispatch(rentalLoadSettings());
-  }, []);
-
-  // useEffect(() => {
-  //   rentalUpdateListingWithExtras();
-  // }, [props.listing]);
+    if (JSON.stringify(prevListing) !== JSON.stringify(props.listing)) {
+      setPrevListing(props.listing);
+      props.dispatch(rentalLoadSettings());
+      
+    }
+  }, [props.listing]);
 
   useEffect(() => {
-    rentalUpdateListingWithExtras();
+    if (JSON.stringify(prevSettings) !== JSON.stringify(props.settings)) {
+      setPrevSettings(props.settings);
+      rentalUpdateListingWithExtras("init-manual-auto");
+    }
   }, [props.settings]);
-
-  const rentalUpdateListingWithExtras = () => {
+  
+  const setAutoValues = (property) => {
     
-  }
-
-  const updateRentalExtraInfos = (link, field, value) => {
-    let tRentalExtraInfos = Object.assign([], rentalExtraInfos);
-
-    let isUpdated = false;
-
-    tRentalExtraInfos = tRentalExtraInfos.map(o => {
-      if (o.link === link) {
-        isUpdated = true;
-        return {
-          ...o,
-          [field]: value
-        };
-      }
-
-      return o;
-    });
-
-    if (!isUpdated) {
-      tRentalExtraInfos.push({
-        "link": link,
-        [field]: value
-      });
-    }
-
-    setRentalExtraInfos(tRentalExtraInfos);
-    localStorage.setItem("rentalExtraInfos", JSON.stringify(tRentalExtraInfos));
-  }
-
-  const loadRentalExtraInfo = (link, field) => {
-    let tRentalExtraInfos = Object.assign([], rentalExtraInfos);
-
-    let tRentalExtraInfo = tRentalExtraInfos.find(o => o.link === link);
-    if (tRentalExtraInfo && tRentalExtraInfo.hasOwnProperty(field)) {
-      if (field === "additionalCosts") {
-        return parseInt(tRentalExtraInfo[field]);
-      }
-
-      return tRentalExtraInfo[field];
-    }
-
-    switch (field) {
-      case "finished_basement":
-        return finishedBasementVals[0];
-        break;
-      case "garages":
-        return garagesVals[0];
-        break;
-      case "poolhotTub":
-        return poolhotTubVals[0];
-        break;
-      case "centralAir":
-        return centralAirVals[0];
-        break;
-      case "applRequired":
-        return applRequiredVals[0];
-        break;
-      case "financing":
-        return financingVals[0];
-        break;
-      case "additionalCosts":
-        return 0;
-        break;
-    
-      default:
-        break;
-    }
-
-    return null;
-  }
-
-  const getAutoCalcedData = (rsr, trei) => {
+    let landlordRent = typeof property.landlord_rent === "string" 
+                            ? parseInt(property.landlord_rent.split("-")[0].replace(/[^\d.-]/g, ''))
+                            : property.landlord_rent;
     return {
-      "estimate_airbnb_rehab": isNaN(parseInt(rsr.square_footage)) ? 0 : parseInt(rsr.square_footage) * props.settings.avgAirdnaRehab
-    };
+      estimate_airbnb_rehab: isNaN(parseInt(property.square_footage)) ? 0 : parseInt(property.square_footage) * props.settings.avgAirdnaRehab,
+      first_security: isNaN(landlordRent) ? 0 : landlordRent * props.settings.securityDepositRentMultiplier,
+      furniture_cost: isNaN(parseInt(property.square_footage)) ? 0 : parseInt(property.square_footage) * props.settings.avgFurnitureCost,
+      appliance_cost: isNaN(parseInt(property.appl_required)) ? 0 : parseInt(property.appl_required) * props.settings.avgCostPerAppliance,
+    }
   }
 
-  const autoCalc = () => {
-    let tRentalExtraInfos = Object.assign([], rentalExtraInfos);
+  const rentalUpdateListingWithExtras = (type, options = {}) => {
+    if (type === "manual-auto") {
+      const {link, field, value} = options;
+      props.dispatch(rentalUpdateListing(props.listing.map(l => {
+        if (l.link === link) {
+          let temp = Object.assign({}, {
+            ...l,
+            [field]: field === "additional_costs" ? parseInt(value) : value
+          });
 
-    let temp = listing.map(rsr => {
-      let reiIdx = _.findIndex(tRentalExtraInfos, (trei) => trei.link === rsr.link);
-      if (reiIdx !== -1) {
-        return {
-          ...tRentalExtraInfos[reiIdx],
-          ...getAutoCalcedData(rsr, tRentalExtraInfos[reiIdx])
-        };
-      } else {
-        return {
-          link: rsr.link,
-          ...getAutoCalcedData(rsr, tRentalExtraInfos[reiIdx])
-        };
-      }
-    });
+          return {
+            ...temp,
+            ...setAutoValues(temp)
+          };
+        }
 
-    setRentalExtraInfos(temp);
-    localStorage.setItem("rentalExtraInfos", JSON.stringify(temp));
+        return {
+          ...l,
+          ...setAutoValues(l)
+        };
+      })));
+    } else if(type === "init-manual-auto") {
+      props.dispatch(rentalUpdateListing(props.listing.map(l => {
+        let temp = Object.assign({}, {
+          ...l,
+          finished_basement: finishedBasementVals[0],
+          garages: garagesVals[0],
+          pool_hot_tub: poolhotTubVals[0],
+          central_air: centralAirVals[0],
+          appl_required: applRequiredVals[0],
+          financing: financingVals[0],
+          additional_costs: 0
+        });
+
+        return {
+          ...temp,
+          ...setAutoValues(temp)
+        };
+      })));
+    }
   }
+
+  console.log('ls: ', props.listing);
 
   return (
     <div className="s-main-content" style={{overflow: props.isFetching ? "hidden" : "auto"}}>
@@ -229,7 +186,7 @@ const Search = (props) => {
                   {
                     siteList.map((o, idx) => {
                       return <Button
-                              key={idx}
+                              key={"sitelist" + idx}
                               color={searchOption.site === o ? 'primary' : 'secondary'}
                               onClick={() => {
                                 setSearchOption({
@@ -386,7 +343,7 @@ const Search = (props) => {
                   {
                     homeTypeList.map((o, idx) => {
                       return <Button
-                              key={idx}
+                              key={"homeTypeList" + idx}
                               color={searchOption.homeType === o.value ? 'primary' : 'secondary'}
                               onClick={() => {
                                 setSearchOption({
@@ -549,7 +506,7 @@ const Search = (props) => {
               </thead>
               <tbody>
               {
-                listing
+                props.listing
                 .map((item, idx) => (
                   <tr key={uuidv4()}>
                     <td 
@@ -572,6 +529,7 @@ const Search = (props) => {
                       <a 
                         href={item.link}
                         target="_blank"
+                        style={{color: "white"}}
                       >
                         {item.address}
                       </a>
@@ -588,17 +546,25 @@ const Search = (props) => {
                     <td className={sTable.scrapedBg}>{item.square_footage}</td>
                     <td className={sTable.manualBg}>
                       <Input
-                        id="finishedBasement"
-                        name="finishedBasement"
-                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "finished_basement")}
+                        id="finished_basement"
+                        name="finished_basement"
+                        value={item.finished_basement}
                         type="select"
                         onChange={(e) => {
-                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "finished_basement", e.target.value);
+                          rentalUpdateListingWithExtras(
+                            "manual-auto", 
+                            {
+                              link: item.link,
+                              field: "finished_basement",
+                              value: e.target.value
+                            }
+                          );
                         }}
                       >
                         {
                           finishedBasementVals.map((o, idx) => {
                             return <option 
+                                      key={uuidv4()}
                                       index={'fb' + idx} 
                                       value={o}
                                     >
@@ -612,15 +578,23 @@ const Search = (props) => {
                       <Input
                         id="garages"
                         name="garages"
-                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "garages")}
+                        value={item.garages}
                         type="select"
                         onChange={(e) => {
-                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "garages", e.target.value);
+                          rentalUpdateListingWithExtras(
+                            "manual-auto", 
+                            {
+                              link: item.link,
+                              field: "garages",
+                              value: e.target.value
+                            }
+                          );
                         }}
                       >
                         {
                           garagesVals.map((o, idx) => {
                             return <option
+                                      key={uuidv4()}
                                       index={'gar' + idx} 
                                       value={o}
                                     >
@@ -632,17 +606,25 @@ const Search = (props) => {
                     </td>
                     <td className={sTable.manualBg}>
                       <Input
-                        id="poolhotTub"
-                        name="poolhotTub"
-                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "poolhotTub")}
+                        id="pool_hot_tub"
+                        name="pool_hot_tub"
+                        value={item.pool_hot_tub}
                         type="select"
                         onChange={(e) => {
-                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "poolhotTub", e.target.value);
+                          rentalUpdateListingWithExtras(
+                            "manual-auto", 
+                            {
+                              link: item.link,
+                              field: "pool_hot_tub",
+                              value: e.target.value
+                            }
+                          );
                         }}
                       >
                         {
                           poolhotTubVals.map((o, idx) => {
                             return <option
+                                      key={uuidv4()}
                                       index={'pol' + idx} 
                                       value={o}
                                     >
@@ -654,17 +636,25 @@ const Search = (props) => {
                     </td>
                     <td className={sTable.manualBg}>
                       <Input
-                        id="centralAir"
-                        name="centralAir"
-                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "centralAir")}
+                        id="central_air"
+                        name="central_air"
+                        value={item.central_air}
                         type="select"
                         onChange={(e) => {
-                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "centralAir", e.target.value);
+                          rentalUpdateListingWithExtras(
+                            "manual-auto", 
+                            {
+                              link: item.link,
+                              field: "central_air",
+                              value: e.target.value
+                            }
+                          );
                         }}
                       >
                         {
                           centralAirVals.map((o, idx) => {
                             return <option
+                                      key={uuidv4()}
                                       index={'cent' + idx} 
                                       value={o}
                                     >
@@ -676,17 +666,25 @@ const Search = (props) => {
                     </td>
                     <td className={sTable.manualBg}>
                       <Input
-                        id="applRequired"
-                        name="applRequired"
-                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "applRequired")}
+                        id="appl_required"
+                        name="appl_required"
+                        value={item.appl_required}
                         type="select"
                         onChange={(e) => {
-                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "applRequired", e.target.value);
+                          rentalUpdateListingWithExtras(
+                            "manual-auto", 
+                            {
+                              link: item.link,
+                              field: "appl_required",
+                              value: e.target.value
+                            }
+                          );
                         }}
                       >
                         {
                           applRequiredVals.map((o, idx) => {
                             return <option
+                                      key={uuidv4()}
                                       index={'appl' + idx} 
                                       value={o}
                                     >
@@ -700,15 +698,23 @@ const Search = (props) => {
                       <Input
                         id="financing"
                         name="financing"
-                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "financing")}
+                        value={item.financing}
                         type="select"
                         onChange={(e) => {
-                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "financing", e.target.value);
+                          rentalUpdateListingWithExtras(
+                            "manual-auto", 
+                            {
+                              link: item.link,
+                              field: "financing",
+                              value: e.target.value
+                            }
+                          );
                         }}
                       >
                         {
                           financingVals.map((o, idx) => {
                             return <option
+                                      key={uuidv4()}
                                       index={'fin' + idx} 
                                       value={o}
                                     >
@@ -719,19 +725,32 @@ const Search = (props) => {
                       </Input>
                     </td>
                     <td className={sTable.autoBg}>
-                      {loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "estimate_airbnb_rehab")}
+                      {item.estimate_airbnb_rehab}
                     </td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}>
+                      {item.first_security}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {item.furniture_cost}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {item.appliance_cost}
+                    </td>
                     <td className={sTable.manualBg}>
                       <Input
-                        id="additionalCosts"
-                        name="additionalCosts"
-                        value={loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "additionalCosts")}
+                        id="additional_costs"
+                        name="additional_costs"
+                        value={item.additional_costs}
                         type="number"
                         onChange={(e) => {
-                          updateRentalExtraInfos(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "additionalCosts", parseInt(e.target.value));
+                          rentalUpdateListingWithExtras(
+                            "manual-auto", 
+                            {
+                              link: item.link,
+                              field: "additional_costs",
+                              value: e.target.value
+                            }
+                          );
                         }}
                       >
                       </Input>

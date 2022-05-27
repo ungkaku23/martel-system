@@ -63,52 +63,70 @@ export function rentalUpdateListing(payload) {
 }
 
 export function rentalSearchListing(payload) {
-  if (payload.cityState === '') {
-    toast.error("City Location is missing", {
-      autoClose: 4000,
-      closeButton: false,
-      hideProgressBar: true,
-      position: toast.POSITION.TOP_RIGHT,
-    });
-  } else {
-    return (dispatch) => {
-      dispatch(rentalSetLoadingSpinner());
+  let listing = [];
 
-      axios.post(
-        'http://localhost:8080/rentals-search-listing',
-        payload,
-        { 
-          headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
-        })
-      .then(function (response) {
-        toast.success("Search Listing Successfully", {
-          autoClose: 4000,
-          closeButton: false,
-          hideProgressBar: true,
-          position: toast.POSITION.TOP_RIGHT,
-        });
+for (let i = 0; i < 5; i++) {
+  listing.push({
+    id: "" + i,
+    date: "2022-01-03",
+    address: "Barrone LLddsssssssssssssC.",
+    city: "Kalamazoo, MI",
+    state: "Michigan",
+    zipcode: "EIO223",
+    landlord_rent: 1000,
+    landlord_name: "Tom Gray",
+    landlord_contact: "+1 123 3532 3422",
+    airdna_adr: 111,
+    airdna_occupancy: 40,
+    beds: 2,
+    baths: 3,
+    square_footage: 400,
+    link: "link" + i
+  });
+}
+return (dispatch) => {
+dispatch(rentalSearchListingSuccess({data: listing, number_of_pages: 2}));
+}
+  // if (payload.cityState === '') {
+  //   toast.error("City Location is missing", {
+  //     autoClose: 4000,
+  //     closeButton: false,
+  //     hideProgressBar: true,
+  //     position: toast.POSITION.TOP_RIGHT,
+  //   });
+  // } else {
+  //   return (dispatch) => {
+  //     dispatch(rentalSetLoadingSpinner());
 
-        // demo data for AirDNA
-        let data = Object.assign([], response.data);
-        data = data.map(o => ({
-          ...o,
-          airdna_adr: 115,
-          airdna_occupancy: 34
-        }));
+  //     axios.post(
+  //       'http://localhost:8080/rentals-search-listing',
+  //       payload,
+  //       { 
+  //         headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
+  //       })
+  //     .then(function (response) {
 
-        dispatch(rentalSearchListingSuccess(response.data));
-      })
-      .catch(function (error) {
-        toast.error(error.response.data, {
-          autoClose: 4000,
-          closeButton: false,
-          hideProgressBar: true,
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        dispatch(rentalSearchListingFailure());
-      });
-    }
-  }
+  //       // demo data for AirDNA
+  //       let data = Object.assign([], response.data);
+  //       data = data.map(o => ({
+  //         ...o,
+  //         airdna_adr: 115,
+  //         airdna_occupancy: 34
+  //       }));
+
+  //       dispatch(rentalSearchListingSuccess(response.data));
+  //     })
+  //     .catch(function (error) {
+  //       toast.error(error.response.data, {
+  //         autoClose: 4000,
+  //         closeButton: false,
+  //         hideProgressBar: true,
+  //         position: toast.POSITION.TOP_RIGHT,
+  //       });
+  //       dispatch(rentalSearchListingFailure());
+  //     });
+  //   }
+  // }
 }
 
 export function rentalSaveSettings(payload) {
@@ -122,12 +140,12 @@ export function rentalSaveSettings(payload) {
         headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
       })
     .then(function (response) {
-      toast.success("Settings is saved successfully", {
-        autoClose: 4000,
-        closeButton: false,
-        hideProgressBar: true,
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      // toast.success("Settings is saved successfully", {
+      //   autoClose: 4000,
+      //   closeButton: false,
+      //   hideProgressBar: true,
+      //   position: toast.POSITION.TOP_RIGHT,
+      // });
       dispatch(rentalSaveSettingsSuccess());
     })
     .catch(function (error) {
@@ -152,12 +170,12 @@ export function rentalLoadSettings(payload) {
         headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
       })
     .then(function (response) {
-      toast.success("Settings is loaded successfully", {
-        autoClose: 4000,
-        closeButton: false,
-        hideProgressBar: true,
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      // toast.success("Settings is loaded successfully", {
+      //   autoClose: 4000,
+      //   closeButton: false,
+      //   hideProgressBar: true,
+      //   position: toast.POSITION.TOP_RIGHT,
+      // });
       dispatch(rentalLoadSettingsSuccess(response.data));
     })
     .catch(function (error) {
