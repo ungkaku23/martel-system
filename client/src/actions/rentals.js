@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
-import axios from 'axios'
+import axios from 'axios';
+import FormData, {getHeaders} from 'form-data';
 
 export const RENTAL_SET_LOADING_SPINNER = 'RENTAL_SET_LOADING_SPINNER';
 export const RENTAL_SEARCH_LISTING_SUCCESS = 'RENTAL_SEARCH_LISTING_SUCCESS';
@@ -98,32 +99,60 @@ export function rentalSearchListing(payload) {
     return (dispatch) => {
       dispatch(rentalSetLoadingSpinner());
 
-      axios.post(
+      let baseUrl = `http://localhost:8000/${payload.site === 'Zillow' ? 'zillow' : 'realtor'}/`;
+
+      axios.post(baseUrl, {
+        "zip_or_location": payload.cityState,
+        "page_index": payload.pageIndex,
+        "buy_type": "rent",
+        "home_type": payload.homeType,
+        "price_min": payload.priceMin,
+        "price_max": payload.priceMax,
+        "beds": payload.beds,
+        "baths": payload.baths
+      })
+      .then(function (response) {
+        let properties = Object.assign([], response.data);
+        console.log('properties: ', properties.data);
+        
+        axios.post(
         'http://localhost:8080/rentals-search-listing',
-        payload,
+        {
+          path: `https://api.airdna.co/client/v1/rentalizer/ltm?access_token=57a6c8bbdbba43ed95cc0814e7bcda63&address=${properties.data[0].address}&zipcode=${properties.data[0].zipcode}&bedrooms=${properties.data[0].beds}&bathrooms=${properties.data[0].baths}`
+        },
         { 
           headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
         })
-      .then(function (response) {
+      .then(function (response2) {
 
         // demo data for AirDNA
-        let data = Object.assign([], response.data);
-        data = data.map(o => ({
-          ...o,
-          airdna_adr: 115,
-          airdna_occupancy: 34
-        }));
+        // let data = Object.assign([], response.data);
+        // data = data.map(o => ({
+        //   ...o,
+        //   airdna_adr: 115,
+        //   airdna_occupancy: 34
+        // }));
 
-        dispatch(rentalSearchListingSuccess(response.data));
+        // dispatch(rentalSearchListingSuccess(data));
       })
-      .catch(function (error) {
-        toast.error(error.response.data, {
+      .catch(function (error2) {
+        toast.error("There is something wrong", {
           autoClose: 4000,
           closeButton: false,
           hideProgressBar: true,
           position: toast.POSITION.TOP_RIGHT,
         });
         dispatch(rentalSearchListingFailure());
+      });
+      })
+      .catch(function (err) {
+          toast.error("There is something wrong", {
+            autoClose: 4000,
+            closeButton: false,
+            hideProgressBar: true,
+            position: toast.POSITION.TOP_RIGHT,
+          });
+          dispatch(rentalSearchListingFailure());
       });
     }
   }
