@@ -20,6 +20,8 @@ import {
   Select
 } from "reactstrap";
 
+import _ from "lodash";
+
 import Autocomplete from "react-google-autocomplete";
 
 import Widget from "../../../components/Widget/Widget";
@@ -30,7 +32,8 @@ import mock from "../mocks.js";
 
 import { 
   rentalSearchListing,
-  rentalLoadSettings
+  rentalLoadSettings,
+  rentalUpdateListing
 } from "../../../actions/rentals";
 
 import NSpinner from "../../../components/NSpinner/NSpinner";
@@ -70,7 +73,7 @@ const Search = (props) => {
   const applRequiredVals = ['0', '1', '2', '3', '4', '5'];
   const financingVals = ['Yes', 'No'];
   
-  const [rentalSearchResults] = useState(mock.rentalSearchResults);
+  const [listing] = useState(mock.listing);
   const [currentPage, setCurrentPage] = useState(1);
 
   const updateCurrentPage = (e, index) => {
@@ -78,7 +81,7 @@ const Search = (props) => {
     setCurrentPage(index);
   }
 
-  const doSearchListing = (e) => {
+  const doRentalSearchListing = (e) => {
     e.preventDefault();
     props.dispatch(rentalSearchListing({
       ...searchOption,
@@ -89,19 +92,22 @@ const Search = (props) => {
 
   useEffect(() => {
     props.dispatch(rentalLoadSettings());
-
-    let tRentalExtraInfos = localStorage.getItem("rentalExtraInfos");
-    if (!tRentalExtraInfos) {
-      tRentalExtraInfos = [];
-    } else {
-      tRentalExtraInfos = JSON.parse(tRentalExtraInfos);
-    }
-
-    setRentalExtraInfos(tRentalExtraInfos);
   }, []);
 
+  // useEffect(() => {
+  //   rentalUpdateListingWithExtras();
+  // }, [props.listing]);
+
+  useEffect(() => {
+    rentalUpdateListingWithExtras();
+  }, [props.settings]);
+
+  const rentalUpdateListingWithExtras = () => {
+    
+  }
+
   const updateRentalExtraInfos = (link, field, value) => {
-    let tRentalExtraInfos = rentalExtraInfos;
+    let tRentalExtraInfos = Object.assign([], rentalExtraInfos);
 
     let isUpdated = false;
 
@@ -129,7 +135,7 @@ const Search = (props) => {
   }
 
   const loadRentalExtraInfo = (link, field) => {
-    let tRentalExtraInfos = rentalExtraInfos;
+    let tRentalExtraInfos = Object.assign([], rentalExtraInfos);
 
     let tRentalExtraInfo = tRentalExtraInfos.find(o => o.link === link);
     if (tRentalExtraInfo && tRentalExtraInfo.hasOwnProperty(field)) {
@@ -166,6 +172,36 @@ const Search = (props) => {
       default:
         break;
     }
+
+    return null;
+  }
+
+  const getAutoCalcedData = (rsr, trei) => {
+    return {
+      "estimate_airbnb_rehab": isNaN(parseInt(rsr.square_footage)) ? 0 : parseInt(rsr.square_footage) * props.settings.avgAirdnaRehab
+    };
+  }
+
+  const autoCalc = () => {
+    let tRentalExtraInfos = Object.assign([], rentalExtraInfos);
+
+    let temp = listing.map(rsr => {
+      let reiIdx = _.findIndex(tRentalExtraInfos, (trei) => trei.link === rsr.link);
+      if (reiIdx !== -1) {
+        return {
+          ...tRentalExtraInfos[reiIdx],
+          ...getAutoCalcedData(rsr, tRentalExtraInfos[reiIdx])
+        };
+      } else {
+        return {
+          link: rsr.link,
+          ...getAutoCalcedData(rsr, tRentalExtraInfos[reiIdx])
+        };
+      }
+    });
+
+    setRentalExtraInfos(temp);
+    localStorage.setItem("rentalExtraInfos", JSON.stringify(temp));
   }
 
   return (
@@ -372,7 +408,7 @@ const Search = (props) => {
             >
               <Button
                 color="primary"
-                onClick={(event) => doSearchListing(event)}
+                onClick={(event) => doRentalSearchListing(event)}
               >
                 Search
               </Button>
@@ -513,7 +549,7 @@ const Search = (props) => {
               </thead>
               <tbody>
               {
-                rentalSearchResults
+                listing
                 .map((item, idx) => (
                   <tr key={uuidv4()}>
                     <td 
@@ -682,7 +718,9 @@ const Search = (props) => {
                         }
                       </Input>
                     </td>
-                    <td className={sTable.autoBg}>1</td>
+                    <td className={sTable.autoBg}>
+                      {loadRentalExtraInfo(item.hasOwnProperty("link") && item.link !== "" ? item.link : "nl" + idx, "estimate_airbnb_rehab")}
+                    </td>
                     <td className={sTable.autoBg}></td>
                     <td className={sTable.autoBg}></td>
                     <td className={sTable.autoBg}></td>
@@ -785,7 +823,7 @@ function mapStateToProps(state) {
   return {
     isFetching: state.rentals.isFetching,
     errorMessage: state.auth.errorMessage,
-    rentalSearchResults: state.rentals.rentalSearchResults,
+    listing: state.rentals.listing,
     numberOfPages: state.rentals.numberOfPages,
     settings: state.rentals.settings
   };

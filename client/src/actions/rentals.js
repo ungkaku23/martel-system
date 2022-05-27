@@ -8,6 +8,7 @@ export const RENTAL_SAVE_SETTINGS_SUCCESS = 'RENTAL_SAVE_SETTINGS_SUCCESS';
 export const RENTAL_SAVE_SETTINGS_FAILURE = 'RENTAL_SAVE_SETTINGS_FAILURE';
 export const RENTAL_LOAD_SETTINGS_SUCCESS = 'RENTAL_LOAD_SETTINGS_SUCCESS';
 export const RENTAL_LOAD_SETTINGS_FAILURE = 'RENTAL_LOAD_SETTINGS_FAILURE';
+export const RENTAL_UPDATE_LISTING = "RENTAL_UPDATE_LISTING";
 
 export function rentalSearchListingSuccess(payload) {
   return {
@@ -51,6 +52,13 @@ export function rentalLoadSettingsSuccess(payload) {
 export function rentalLoadSettingsFailure() {
   return {
     type: RENTAL_LOAD_SETTINGS_FAILURE
+  };
+}
+
+export function rentalUpdateListing(payload) {
+  return {
+    type: RENTAL_UPDATE_LISTING,
+    payload
   };
 }
 

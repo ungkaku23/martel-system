@@ -5,13 +5,14 @@ import {
   RENTAL_SAVE_SETTINGS_SUCCESS,
   RENTAL_SAVE_SETTINGS_FAILURE,
   RENTAL_LOAD_SETTINGS_SUCCESS,
-  RENTAL_LOAD_SETTINGS_FAILURE
+  RENTAL_LOAD_SETTINGS_FAILURE,
+  RENTAL_UPDATE_LISTING
 } from "../actions/rentals.js";
 
 export default function rentals(state = {
   isFetching: false,
   errorMessage: '',
-  rentalSearchResults: [],
+  listing: [],
   numberOfPages: 1,
   settings: {
     desiredMinMonthlyProfits: 0,
@@ -35,24 +36,34 @@ export default function rentals(state = {
       return Object.assign({}, state, {
         isFetching: true
       });
+      break;
+    case RENTAL_UPDATE_LISTING:
+      return Object.assign({}, state, {
+        listing: action.payload
+      }); 
+      break;
     case RENTAL_SEARCH_LISTING_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
         numberOfPages: action.payload.number_of_pages,
-        rentalSearchResults: action.payload.data
+        listing: action.payload.data
       });
+      break;
     case RENTAL_SEARCH_LISTING_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
       });
+      break;
     case RENTAL_SAVE_SETTINGS_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false
       });
+      break;
     case RENTAL_SAVE_SETTINGS_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
       });
+      break;
     case RENTAL_LOAD_SETTINGS_SUCCESS:
       console.log('RENTAL_LOAD_SETTINGS_SUCCESS: ', action.payload);
       if (action.payload) {
@@ -79,11 +90,14 @@ export default function rentals(state = {
       return Object.assign({}, state, {
         isFetching: false
       }); 
+      break;
     case RENTAL_LOAD_SETTINGS_FAILURE:
       return Object.assign({}, state, {
         isFetching: false
       });
+      break;
     default:
       return state;
+      break;
   }
 }

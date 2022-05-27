@@ -4,7 +4,7 @@ const Setting = require("../models/setting");
 exports.rentalsSearchListing = function (req, res) {
   console.log('rentalsSearchListing: ', req.body);
   let options = req.body;
-  let baseUrl = `http://localhost:8000/${options.site === 'Zillow' ? 'zillow' : 'realtor'}`;
+  let baseUrl = `http://35.182.244.112/${options.site === 'Zillow' ? 'zillow' : 'realtor'}`;
 
   axios.post(baseUrl, {
     "zip_or_location": options.cityState,

@@ -1,7 +1,7 @@
-let rentalSearchResults = [];
+let listing = [];
 
 for (let i = 0; i < 5; i++) {
-  rentalSearchResults.push({
+  listing.push({
     id: "" + i,
     date: "2022-01-03",
     address: "Barrone LLddsssssssssssssC.",
@@ -15,12 +15,13 @@ for (let i = 0; i < 5; i++) {
     airdna_occupancy: 40,
     beds: 2,
     baths: 3,
-    square_footage: 400
+    square_footage: 400,
+    link: "link" + i
   });
 }
 
 const mock = {
-  rentalSearchResults,
+  listing,
   secondTable: []
 }
 

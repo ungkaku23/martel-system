@@ -34,7 +34,7 @@ const Settings = (props) => {
     setSettings(props.settings);
   }, [props.settings]);
 
-  const doSaveSettings = (e) => {
+  const doRentalSaveSettings = (e) => {
     e.preventDefault();
     props.dispatch(rentalSaveSettings(settings));
   }
@@ -383,7 +383,7 @@ const Settings = (props) => {
             >
               <Button
                 color="primary"
-                onClick={(event) => doSaveSettings(event)}
+                onClick={(event) => doRentalSaveSettings(event)}
               >
                 Save
               </Button>
