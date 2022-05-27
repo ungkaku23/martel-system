@@ -63,70 +63,70 @@ export function rentalUpdateListing(payload) {
 }
 
 export function rentalSearchListing(payload) {
-  let listing = [];
+//   let listing = [];
 
-for (let i = 0; i < 5; i++) {
-  listing.push({
-    id: "" + i,
-    date: "2022-01-03",
-    address: "Barrone LLddsssssssssssssC.",
-    city: "Kalamazoo, MI",
-    state: "Michigan",
-    zipcode: "EIO223",
-    landlord_rent: 1000,
-    landlord_name: "Tom Gray",
-    landlord_contact: "+1 123 3532 3422",
-    airdna_adr: 111,
-    airdna_occupancy: 0.45,
-    beds: 2,
-    baths: 3,
-    square_footage: 400,
-    link: "link" + i
-  });
-}
-return (dispatch) => {
-dispatch(rentalSearchListingSuccess({data: listing, number_of_pages: 2}));
-}
-  // if (payload.cityState === '') {
-  //   toast.error("City Location is missing", {
-  //     autoClose: 4000,
-  //     closeButton: false,
-  //     hideProgressBar: true,
-  //     position: toast.POSITION.TOP_RIGHT,
-  //   });
-  // } else {
-  //   return (dispatch) => {
-  //     dispatch(rentalSetLoadingSpinner());
+// for (let i = 0; i < 5; i++) {
+//   listing.push({
+//     id: "" + i,
+//     date: "2022-01-03",
+//     address: "Barrone LLddsssssssssssssC.",
+//     city: "Kalamazoo, MI",
+//     state: "Michigan",
+//     zipcode: "EIO223",
+//     landlord_rent: 1000,
+//     landlord_name: "Tom Gray",
+//     landlord_contact: "+1 123 3532 3422",
+//     airdna_adr: 111,
+//     airdna_occupancy: 0.45,
+//     beds: 2,
+//     baths: 3,
+//     square_footage: 400,
+//     link: "link" + i
+//   });
+// }
+// return (dispatch) => {
+// dispatch(rentalSearchListingSuccess({data: listing, number_of_pages: 2}));
+// }
+  if (payload.cityState === '') {
+    toast.error("City Location is missing", {
+      autoClose: 4000,
+      closeButton: false,
+      hideProgressBar: true,
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  } else {
+    return (dispatch) => {
+      dispatch(rentalSetLoadingSpinner());
 
-  //     axios.post(
-  //       'http://localhost:8080/rentals-search-listing',
-  //       payload,
-  //       { 
-  //         headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
-  //       })
-  //     .then(function (response) {
+      axios.post(
+        'http://localhost:8080/rentals-search-listing',
+        payload,
+        { 
+          headers: {"Authorization" : `Bearer ${localStorage.getItem('token')}`}
+        })
+      .then(function (response) {
 
-  //       // demo data for AirDNA
-  //       let data = Object.assign([], response.data);
-  //       data = data.map(o => ({
-  //         ...o,
-  //         airdna_adr: 115,
-  //         airdna_occupancy: 34
-  //       }));
+        // demo data for AirDNA
+        let data = Object.assign([], response.data);
+        data = data.map(o => ({
+          ...o,
+          airdna_adr: 115,
+          airdna_occupancy: 34
+        }));
 
-  //       dispatch(rentalSearchListingSuccess(response.data));
-  //     })
-  //     .catch(function (error) {
-  //       toast.error(error.response.data, {
-  //         autoClose: 4000,
-  //         closeButton: false,
-  //         hideProgressBar: true,
-  //         position: toast.POSITION.TOP_RIGHT,
-  //       });
-  //       dispatch(rentalSearchListingFailure());
-  //     });
-  //   }
-  // }
+        dispatch(rentalSearchListingSuccess(response.data));
+      })
+      .catch(function (error) {
+        toast.error(error.response.data, {
+          autoClose: 4000,
+          closeButton: false,
+          hideProgressBar: true,
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        dispatch(rentalSearchListingFailure());
+      });
+    }
+  }
 }
 
 export function rentalSaveSettings(payload) {

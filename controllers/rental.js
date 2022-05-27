@@ -1,12 +1,11 @@
 const axios = require('axios');
 const Setting = require("../models/setting");
-
-
+var FormData = require('form-data');
 
 exports.rentalsSearchListing = function (req, res) {
   console.log('rentalsSearchListing: ', req.body);
   let options = req.body;
-  let baseUrl = `http://35.182.244.112/${options.site === 'Zillow' ? 'zillow' : 'realtor'}`;
+  let baseUrl = `http://35.182.244.112/${options.site === 'Zillow' ? 'zillow' : 'realtor'}/`;
 
   axios.post(baseUrl, {
     "zip_or_location": options.cityState,
@@ -19,9 +18,29 @@ exports.rentalsSearchListing = function (req, res) {
     "baths": options.baths
   })
   .then(function (response) {
-    let data = Object.assign([], response.data);
-    data.
-    res.json(response.data);
+    let properties = Object.assign([], response.data);
+
+    
+    // let data = new FormData();
+    // let config = {
+    //   method: 'get',
+    //   url: 'https://api.airdna.co/client/v1/rentalizer/ltm?access_token=57a6c8bbdbba43ed95cc0814e7bcda63&address=525 Pier Ave Santa Monica CA&zipcode=90405&bedrooms=3&bathrooms=2&accommodates=6',
+    //   headers: { 
+    //     'Accept': 'application/json', 
+    //     ...data.getHeaders()
+    //   },
+    //   data : data
+    // };
+    
+    // axios(config)
+    // .then(function (response) {
+    //   console.log(JSON.stringify(response.data));
+    // })
+    // .catch(function (error) {
+    //   console.log(error);
+    // });
+
+    res.json(properties);
   })
   .catch(function (err) {
     res.status(400).send(err.message);
