@@ -77,7 +77,7 @@ for (let i = 0; i < 5; i++) {
     landlord_name: "Tom Gray",
     landlord_contact: "+1 123 3532 3422",
     airdna_adr: 111,
-    airdna_occupancy: 40,
+    airdna_occupancy: 0.45,
     beds: 2,
     baths: 3,
     square_footage: 400,

@@ -103,17 +103,59 @@ const Search = (props) => {
       rentalUpdateListingWithExtras("init-manual-auto");
     }
   }, [props.settings]);
+
+  const fixedNumber = (val) => {
+    return parseFloat(val).toFixed(3);
+  }
   
   const setAutoValues = (property) => {
     
     let landlordRent = typeof property.landlord_rent === "string" 
                             ? parseInt(property.landlord_rent.split("-")[0].replace(/[^\d.-]/g, ''))
                             : property.landlord_rent;
+    let airdnaAdr = isNaN(parseFloat(property.airdna_adr)) ? 0 : parseFloat(property.airdna_adr);
+    let airdnaOccupancy = isNaN(parseFloat(property.airdna_occupancy)) ? 0 : parseFloat(property.airdna_occupancy);
+    let estimateAirbnbRehab = isNaN(parseInt(property.square_footage)) ? 0 : parseInt(property.square_footage) * props.settings.avgAirdnaRehab;
+    let firstSecurity = isNaN(landlordRent) ? 0 : landlordRent * props.settings.securityDepositRentMultiplier;
+    let furnitureCost = isNaN(parseInt(property.square_footage)) ? 0 : parseInt(property.square_footage) * props.settings.avgFurnitureCost;
+    let applianceCost = isNaN(parseInt(property.appl_required)) ? 0 : parseInt(property.appl_required) * props.settings.avgCostPerAppliance;
+    let monthlyAirdnaIncome = ((airdnaAdr * airdnaOccupancy * 365) / 12);
+    let additionalCosts = isNaN(parseInt(property.additional_costs)) ? 0 : parseInt(property.additional_costs);
+    let airbnbFee = (parseFloat(monthlyAirdnaIncome) * props.settings.airbnbFee) / 12;
+    let maintenance = ((parseFloat(monthlyAirdnaIncome) * (props.settings.ongoingMF / 100)) / 12);
+    let insurance = (props.settings.shortTermRTInsurance / 12);
+    let propertyManagement = ((monthlyAirdnaIncome) * props.settings.propertyManagement);
+    let rentalTax = ((monthlyAirdnaIncome) * props.settings.averageRentalTax);
+    let supplies = ((monthlyAirdnaIncome) * props.settings.avgSupplyBudget);
+    let poolMaint = property.pool_hot_tub === 'Yes Pool' 
+                    ? 80
+                    : property.pool_hot_tub === 'Yes Hottub'
+                      ? 80
+                      : property.pool_hot_tub === 'Yes Hottub'
+                        ? 120
+                        : 0;
+    let interest = property.financing === "Yes" 
+                    ? ((furnitureCost * applianceCost * additionalCosts * 0.18) / 3)
+                    : 0;
+    let allInExpenses = (airbnbFee + maintenance + props.settings.internetUtility + props.settings.landscapeLawnSnow + insurance + propertyManagement + property.landlord_rent + rentalTax + supplies + poolMaint + interest);
     return {
-      estimate_airbnb_rehab: isNaN(parseInt(property.square_footage)) ? 0 : parseInt(property.square_footage) * props.settings.avgAirdnaRehab,
-      first_security: isNaN(landlordRent) ? 0 : landlordRent * props.settings.securityDepositRentMultiplier,
-      furniture_cost: isNaN(parseInt(property.square_footage)) ? 0 : parseInt(property.square_footage) * props.settings.avgFurnitureCost,
-      appliance_cost: isNaN(parseInt(property.appl_required)) ? 0 : parseInt(property.appl_required) * props.settings.avgCostPerAppliance,
+      estimate_airbnb_rehab: estimateAirbnbRehab,
+      first_security: firstSecurity,
+      furniture_cost: furnitureCost,
+      appliance_cost: applianceCost,
+      monthly_airdna_income: monthlyAirdnaIncome,
+      airbnb_fee: airbnbFee,
+      maintenance: maintenance,
+      insurance: insurance,
+      property_management: propertyManagement,
+      rental_tax: rentalTax,
+      supplies: supplies,
+      pool_maint: poolMaint,
+      interest: interest,
+      all_in_expenses: allInExpenses,
+      monthly_cashflow: monthlyAirdnaIncome - allInExpenses,
+      yearly_cashflow: (monthlyAirdnaIncome - allInExpenses) * 12,
+      cash_on_cash_return: (((monthlyAirdnaIncome - allInExpenses) * 12) / (firstSecurity + furnitureCost + applianceCost + additionalCosts))
     }
   }
 
@@ -725,16 +767,16 @@ const Search = (props) => {
                       </Input>
                     </td>
                     <td className={sTable.autoBg}>
-                      {item.estimate_airbnb_rehab}
+                      {fixedNumber(item.estimate_airbnb_rehab)}
                     </td>
                     <td className={sTable.autoBg}>
-                      {item.first_security}
+                      {fixedNumber(item.first_security)}
                     </td>
                     <td className={sTable.autoBg}>
-                      {item.furniture_cost}
+                      {fixedNumber(item.furniture_cost)}
                     </td>
                     <td className={sTable.autoBg}>
-                      {item.appliance_cost}
+                      {fixedNumber(item.appliance_cost)}
                     </td>
                     <td className={sTable.manualBg}>
                       <Input
@@ -755,22 +797,54 @@ const Search = (props) => {
                       >
                       </Input>
                     </td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
-                    <td className={sTable.autoBg}></td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.monthly_airdna_income)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.airbnb_fee)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.maintenance)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {props.settings.internetUtility}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {props.settings.landscapeLawnSnow}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.insurance)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.property_management)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {item.landlord_rent}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.rental_tax)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.supplies)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.pool_maint)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.interest)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.all_in_expenses)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.monthly_cashflow)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.yearly_cashflow)}
+                    </td>
+                    <td className={sTable.autoBg}>
+                      {fixedNumber(item.cash_on_cash_return)}
+                    </td>
                     {/* <td className={sTable.airDNABg}></td>
                     <td className={sTable.airDNABg}></td>
                     <td className={sTable.airDNABg}></td>

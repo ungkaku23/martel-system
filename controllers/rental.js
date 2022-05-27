@@ -1,6 +1,8 @@
 const axios = require('axios');
 const Setting = require("../models/setting");
 
+
+
 exports.rentalsSearchListing = function (req, res) {
   console.log('rentalsSearchListing: ', req.body);
   let options = req.body;
@@ -17,6 +19,8 @@ exports.rentalsSearchListing = function (req, res) {
     "baths": options.baths
   })
   .then(function (response) {
+    let data = Object.assign([], response.data);
+    data.
     res.json(response.data);
   })
   .catch(function (err) {
