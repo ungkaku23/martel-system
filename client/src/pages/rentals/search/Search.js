@@ -73,7 +73,7 @@ const Search = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [prevListing, setPrevListing] = useState([]);
-  const [prevSettings, setPrevSettings] = useState({});
+  const [prevSettings, setPrevSettings] = useState(props.settings);
 
   const updateCurrentPage = (e, index) => {
     e.preventDefault();
@@ -137,7 +137,7 @@ const Search = (props) => {
     let interest = property.financing === "Yes" 
                     ? ((furnitureCost * applianceCost * additionalCosts * 0.18) / 3)
                     : 0;
-    let allInExpenses = (airbnbFee + maintenance + props.settings.internetUtility + props.settings.landscapeLawnSnow + insurance + propertyManagement + property.landlord_rent + rentalTax + supplies + poolMaint + interest);
+    let allInExpenses = (airbnbFee + maintenance + props.settings.internetUtility + props.settings.landscapeLawnSnow + insurance + propertyManagement + landlordRent + rentalTax + supplies + poolMaint + interest);
     return {
       estimate_airbnb_rehab: estimateAirbnbRehab,
       first_security: firstSecurity,

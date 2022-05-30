@@ -10,19 +10,7 @@ import {
 } from "../actions/rentals.js";
 
 // ==settings==
-// desiredMinMonthlyProfits: 0,
-// airbnbFee: 0,
-// propertyManagement: 0,
-// averageRentalTax: 0,
-// ongoingMF: 0,
-// internetUtility: 0,
-// shortTermRTInsurance: 0,
-// landscapeLawnSnow: 0,
-// avgFurnitureCost: 0,
-// avgCostPerAppliance: 0,
-// securityDepositRentMultiplier: 0,
-// avgAirdnaRehab: 0,
-// avgSupplyBudget: 0
+
 
 
 export default function rentals(state = {
@@ -30,7 +18,21 @@ export default function rentals(state = {
   errorMessage: '',
   listing: [],
   numberOfPages: 1,
-  settings: {},
+  settings: {
+    desiredMinMonthlyProfits: 0,
+    airbnbFee: 0,
+    propertyManagement: 0,
+    averageRentalTax: 0,
+    ongoingMF: 0,
+    internetUtility: 0,
+    shortTermRTInsurance: 0,
+    landscapeLawnSnow: 0,
+    avgFurnitureCost: 0,
+    avgCostPerAppliance: 0,
+    securityDepositRentMultiplier: 0,
+    avgAirdnaRehab: 0,
+    avgSupplyBudget: 0
+  },
   manualInfos: []
 }, action) {
   switch (action.type) {
